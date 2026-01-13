@@ -11,27 +11,37 @@ export default defineConfig(
     ignores: ['dist', 'node_modules', '.DS_Store']
   },
 
+  // 基础配置 - 所有文件的全局变量
   {
     files: ['**/*.{js,mjs,cjs,ts,vue}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      parser: vueParser,
-      parserOptions: {
-        parser: tseslint.parser,
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-        extraFileExtensions: ['.vue']
-      },
       globals: {
         ...globals.browser,
         ...globals.node
       }
     }
   },
-  ...tseslint.configs.recommended,
-  ...pluginVue.configs['flat/recommended'],
 
+  // TypeScript 配置
+  ...tseslint.configs.recommended,
+
+  // Vue 配置
+  ...pluginVue.configs['flat/recommended'],
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      }
+    }
+  },
+
+  // Prettier 配置
   {
     plugins: {
       prettier: pluginPrettier
@@ -51,6 +61,7 @@ export default defineConfig(
     }
   },
 
+  // 自定义规则
   {
     rules: {
       'no-unused-vars': 'off',
