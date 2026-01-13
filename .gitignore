@@ -15,6 +15,7 @@ coverage
 *.local
 .shared
 .agent
+.env
 
 # Editor directories and files
 .vscode/*
