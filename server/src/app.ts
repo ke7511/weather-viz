@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { config, shouldUseMock } from './config'
 import cityRouter from './routes/city'
+import weatherRouter from './routes/weather'
 
 const app = express()
 
@@ -11,6 +12,7 @@ app.use(express.json())
 
 // 路由
 app.use('/api/city', cityRouter)
+app.use('/api/weather', weatherRouter)
 
 app.listen(config.port, () => {
   console.log(`🚀 Server is running on http://localhost:${config.port}`)

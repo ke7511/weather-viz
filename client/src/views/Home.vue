@@ -1,5 +1,14 @@
 <script setup lang="ts">
-// 暂时留空
+import CitySearch from '@/components/CitySearch.vue'
+import type { CityInfo } from '@/api/city'
+import { ref } from 'vue'
+
+const location = ref<CityInfo | null>(null)
+function handleCitySelect(city: CityInfo) {
+  console.log('选中城市:', city)
+  location.value = city
+  // TODO: 获取该城市的天气数据
+}
 </script>
 
 <template>
@@ -7,10 +16,10 @@
     <!-- 顶部导航 -->
     <header class="header">
       <div class="logo">🌤️ Weather Viz</div>
-      <input type="text" class="search" placeholder="🔍 搜索城市..." />
+      <CitySearch @select="handleCitySelect" />
       <div class="location-badge">
         <span class="location-icon">📍</span>
-        <span class="location-text">当前位置</span>
+        <span class="location-text">{{ location?.name }}</span>
         <span class="location-arrow">▼</span>
       </div>
     </header>
@@ -19,7 +28,7 @@
     <main class="bento-grid">
       <!-- 左侧大卡片：当前天气 -->
       <section class="card card-main">
-        <div class="city">📍 北京</div>
+        <div class="city">📍 {{ location?.name }}</div>
         <div class="weather-icon">☀️</div>
         <div class="temp">28°C</div>
 
@@ -60,6 +69,7 @@
 
   /* 顶部导航 */
   .header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -73,19 +83,6 @@
       font-size: 1.5rem;
       font-weight: 600;
       color: var(--color-text);
-    }
-    .search {
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      width: 300px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-
-      &:focus {
-        border-color: var(--color-primary);
-      }
     }
     .location-badge {
       display: flex;
