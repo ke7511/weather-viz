@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { shouldUseMock } from '../config'
 import { searchMockCity } from '../mock/city'
-import { searchCity } from '../utils/qweather'
+import { getTrueCity } from '../utils/qweather'
 
 /**
  * 获取城市列表或搜索城市
@@ -24,7 +24,7 @@ export async function getCity(req: Request, res: Response) {
     }
 
     // 调用封装好的和风天气 API
-    const data = await searchCity(keyword)
+    const data = await getTrueCity(keyword)
     return res.json(data)
   } catch (error) {
     console.error('城市搜索失败:', error)

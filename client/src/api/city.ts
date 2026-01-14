@@ -12,10 +12,10 @@ export interface CityInfo {
 }
 
 // 城市搜索响应
-export interface SearchCityResponse {
+interface SearchCityResponse {
   code: string
   location: CityInfo[]
 }
 
 export const searchCityApi = (keyword: string) =>
-  request.get<unknown, SearchCityResponse>('/city', { params: { keyword } })
+  request.get<SearchCityResponse>('/city', { params: { keyword } })

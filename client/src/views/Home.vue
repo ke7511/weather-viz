@@ -1,14 +1,37 @@
 <script setup lang="ts">
 import CitySearch from '@/components/CitySearch.vue'
 import type { CityInfo } from '@/api/city'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getWeatherApi, type weatherInfo } from '@/api/weather'
+import { useIntervalFn } from '@vueuse/core'
 
-const location = ref<CityInfo | null>(null)
-function handleCitySelect(city: CityInfo) {
-  console.log('选中城市:', city)
-  location.value = city
-  // TODO: 获取该城市的天气数据
+const location = ref<CityInfo>({
+  id: '101010100',
+  name: '北京',
+  adm1: '北京市',
+  adm2: '北京',
+  country: '中国',
+  lat: '39.90499',
+  lon: '116.40529'
+})
+
+const weather = ref<weatherInfo | null>(null)
+async function getWeather() {
+  const res = await getWeatherApi(location.value.id)
+  weather.value = res.now
 }
+
+async function handleCitySelect(city: CityInfo) {
+  location.value = city
+  await getWeather()
+}
+
+// 每 10 分钟自动刷新天气数据
+useIntervalFn(getWeather, 10 * 60 * 1000)
+
+onMounted(() => {
+  getWeather()
+})
 </script>
 
 <template>
@@ -20,7 +43,6 @@ function handleCitySelect(city: CityInfo) {
       <div class="location-badge">
         <span class="location-icon">📍</span>
         <span class="location-text">{{ location?.name }}</span>
-        <span class="location-arrow">▼</span>
       </div>
     </header>
 
@@ -29,20 +51,34 @@ function handleCitySelect(city: CityInfo) {
       <!-- 左侧大卡片：当前天气 -->
       <section class="card card-main">
         <div class="city">📍 {{ location?.name }}</div>
-        <div class="weather-icon">☀️</div>
-        <div class="temp">28°C</div>
+        <div class="weather-icon"><i :class="'qi-' + weather?.icon"></i></div>
+        <div class="temp">{{ weather?.temp }}°C</div>
 
-        <div class="desc">晴天 · 体感 30°</div>
+        <div class="desc">
+          {{ weather?.text }} · 体感 {{ weather?.feelsLike }}°C
+        </div>
       </section>
 
       <!-- 右侧小卡片：指标 -->
       <div class="indicators-grid">
-        <div class="card card-indicator">💧 湿度<br />65%</div>
-        <div class="card card-indicator">🌬️ 风速<br />12km/h</div>
-        <div class="card card-indicator">🌧️ 降水<br />10%</div>
-        <div class="card card-indicator">☀️ 紫外线<br />中等</div>
-        <div class="card card-indicator">🌡️ 气压<br />1013hPa</div>
-        <div class="card card-indicator">👁️ 能见度<br />25km</div>
+        <div class="card card-indicator">
+          💧 湿度<br />{{ weather?.humidity }}%
+        </div>
+        <div class="card card-indicator">
+          🌬️ 风速<br />{{ weather?.windSpeed }}km/h
+        </div>
+        <div class="card card-indicator">
+          🌧️ 过去1小时降水量<br />{{ weather?.precip }}mm
+        </div>
+        <div class="card card-indicator">
+          🧭 风向<br />{{ weather?.windDir }}
+        </div>
+        <div class="card card-indicator">
+          🌡️ 气压<br />{{ weather?.pressure }}hPa
+        </div>
+        <div class="card card-indicator">
+          👁️ 能见度<br />{{ weather?.vis }}km
+        </div>
       </div>
 
       <!-- 温度趋势图 -->
@@ -104,11 +140,6 @@ function handleCitySelect(city: CityInfo) {
         font-size: 0.9rem;
         color: var(--color-text);
         font-weight: 500;
-      }
-
-      .location-arrow {
-        font-size: 0.6rem;
-        color: var(--color-text-secondary);
       }
     }
   }

@@ -30,13 +30,21 @@ export const qweatherApi = {
 /**
  * GEO API - 城市搜索
  */
-export async function searchCity(location: string) {
+export async function getTrueCity(location: string) {
   return qweatherApi.get('/geo/v2/city/lookup', { location })
 }
 
 /**
  * GEO API - 热门城市
  */
-export async function getTopCities(range?: 'cn' | 'world', number?: number) {
+export async function getTrueTopCities(
+  range?: 'cn' | 'world',
+  number?: number
+) {
   return qweatherApi.get('/geo/v2/city/top', { range, number })
+}
+
+// 天气数据
+export async function getTrueWeather(locationId: string) {
+  return qweatherApi.get('/v7/weather/now', { location: locationId })
 }

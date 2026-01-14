@@ -1,12 +1,12 @@
-import axios from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 
-export const request = axios.create({
+const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
   timeout: 10000
 })
 
 // 添加请求拦截器
-request.interceptors.request.use(
+instance.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
     return config
@@ -18,7 +18,7 @@ request.interceptors.request.use(
 )
 
 // 添加响应拦截器
-request.interceptors.response.use(
+instance.interceptors.response.use(
   function (response) {
     // 直接返回数据部分
     return response.data
@@ -29,3 +29,33 @@ request.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+/**
+ * 类型安全的请求封装
+ * 由于响应拦截器已解包 response.data，这里的泛型 T 直接表示业务数据类型
+ */
+export const request = {
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.get(url, config) as Promise<T>
+  },
+  post<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    return instance.post(url, data, config) as Promise<T>
+  },
+  put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return instance.put(url, data, config) as Promise<T>
+  },
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return instance.delete(url, config) as Promise<T>
+  },
+  patch<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    return instance.patch(url, data, config) as Promise<T>
+  }
+}
