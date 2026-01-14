@@ -63,7 +63,7 @@ function selectCity(city: CityInfo) {
           :key="item.id"
           @mousedown.prevent="selectCity(item)"
         >
-          {{ item.name }} · {{ item.adm1 }}
+          {{ item.name }} - {{ item.adm2 }} - {{ item.adm1 }}
         </li>
       </ul>
       <p v-else-if="searchResult.length === 0">暂无匹配城市</p>

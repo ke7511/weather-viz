@@ -19,3 +19,7 @@ interface SearchCityResponse {
 
 export const searchCityApi = (keyword: string) =>
   request.get<SearchCityResponse>('/city', { params: { keyword } })
+
+// 根据经纬度获取城市
+export const getCityByLocationApi = (lon: number, lat: number) =>
+  request.get<SearchCityResponse>('/city/locate', { params: { lon, lat } })

@@ -103,3 +103,14 @@ export function searchMockCity(keyword: string) {
     location: filtered
   }
 }
+
+/**
+ * 根据经纬度获取最近的模拟城市
+ * 在 mock 模式下默认返回北京
+ */
+export function getMockCityByLocation() {
+  return {
+    code: '200',
+    location: [mockCityData.location[0]]
+  }
+}

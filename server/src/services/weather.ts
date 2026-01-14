@@ -1,3 +1,4 @@
+import { Request, Response } from 'express'
 import { shouldUseMock } from '../config'
 import { getTrueWeather } from '../utils/qweather'
 import { getMockWeather } from '../mock/weather'

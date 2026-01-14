@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import CitySearch from '@/components/CitySearch.vue'
+import LocationBadge from '@/components/LocationBadge.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import { getWeatherApi, type weatherInfo } from '@/api/weather'
@@ -16,12 +17,18 @@ const location = ref<CityInfo>({
 })
 
 const weather = ref<weatherInfo | null>(null)
+
 async function getWeather() {
   const res = await getWeatherApi(location.value.id)
   weather.value = res.now
 }
 
 async function handleCitySelect(city: CityInfo) {
+  location.value = city
+  await getWeather()
+}
+
+async function handleLocate(city: CityInfo) {
   location.value = city
   await getWeather()
 }
@@ -40,10 +47,7 @@ onMounted(() => {
     <header class="header">
       <div class="logo">🌤️ Weather Viz</div>
       <CitySearch @select="handleCitySelect" />
-      <div class="location-badge">
-        <span class="location-icon">📍</span>
-        <span class="location-text">{{ location?.name }}</span>
-      </div>
+      <LocationBadge :location="location" @locate="handleLocate" />
     </header>
 
     <!-- 主体 Bento Grid -->
@@ -119,28 +123,6 @@ onMounted(() => {
       font-size: 1.5rem;
       font-weight: 600;
       color: var(--color-text);
-    }
-    .location-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border: 1px solid var(--glass-border);
-      border-radius: 999px; /* 椭圆/胶囊形 */
-      cursor: pointer;
-      transition: all 0.2s;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-
-      .location-icon {
-        font-size: 1rem;
-      }
-
-      .location-text {
-        font-size: 0.9rem;
-        color: var(--color-text);
-        font-weight: 500;
-      }
     }
   }
 

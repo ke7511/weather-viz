@@ -31,7 +31,7 @@ export const qweatherApi = {
  * GEO API - 城市搜索
  */
 export async function getTrueCity(location: string) {
-  return qweatherApi.get('/geo/v2/city/lookup', { location })
+  return qweatherApi.get('/geo/v2/city/lookup', { location, range: 'cn' })
 }
 
 /**
@@ -42,6 +42,16 @@ export async function getTrueTopCities(
   number?: number
 ) {
   return qweatherApi.get('/geo/v2/city/top', { range, number })
+}
+
+/**
+ * GEO API - 根据经纬度查询城市
+ */
+export async function getCityByLocation(lon: number, lat: number) {
+  return qweatherApi.get('/geo/v2/city/lookup', {
+    location: `${lon},${lat}`,
+    range: 'cn'
+  })
 }
 
 // 天气数据
