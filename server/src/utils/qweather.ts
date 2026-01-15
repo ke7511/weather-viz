@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { config } from '../config'
 import { generateQWeatherJwt } from './jwt'
+import dayjs from 'dayjs'
 
 /**
  * 自动处理 JWT 认证
@@ -57,4 +58,22 @@ export async function getCityByLocation(lon: number, lat: number) {
 // 天气数据
 export async function getTrueWeather(locationId: string) {
   return qweatherApi.get('/v7/weather/now', { location: locationId })
+}
+
+/**
+ * 生活指数 API - UV 紫外线指数
+ * type=5 表示紫外线指数
+ */
+export async function getTrueUVIndex(locationId: string) {
+  return qweatherApi.get('/v7/indices/1d', { location: locationId, type: '5' })
+}
+
+/**
+ * 天文 API - 日出日落
+ */
+export async function getTrueSunriseSunset(locationId: string, date?: string) {
+  return qweatherApi.get('/v7/astronomy/sun', {
+    location: locationId,
+    date: date || dayjs().format('YYYYMMDD')
+  })
 }

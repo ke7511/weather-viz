@@ -3,36 +3,53 @@ import CitySearch from '@/components/CitySearch.vue'
 import LocationBadge from '@/components/LocationBadge.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
-import { getWeatherApi, type weatherInfo } from '@/api/weather'
+import {
+  getWeatherApi,
+  getUVIndexApi,
+  getSunriseSunsetApi,
+  type weatherInfo,
+  type UVIndexInfo
+} from '@/api/weather'
 import { useIntervalFn } from '@vueuse/core'
 import { useLocationStore } from '@/stores/location'
 import { storeToRefs } from 'pinia'
+import dayjs from 'dayjs'
 
 const locationStore = useLocationStore()
 const { location } = storeToRefs(locationStore)
 const { setLocation } = locationStore
 const weather = ref<weatherInfo | null>(null)
+const uvIndex = ref<UVIndexInfo | null>(null)
+const sunrise = ref<string>('')
+const sunset = ref<string>('')
 
-async function getWeather() {
-  const res = await getWeatherApi(location.value.id)
-  weather.value = res.now
+async function fetchAllData() {
+  const [weatherRes, uvRes, sunRes] = await Promise.all([
+    getWeatherApi(location.value.id),
+    getUVIndexApi(location.value.id),
+    getSunriseSunsetApi(location.value.id)
+  ])
+  weather.value = weatherRes.now
+  uvIndex.value = uvRes.daily?.[0] || null
+  sunrise.value = sunRes.sunrise || ''
+  sunset.value = sunRes.sunset || ''
 }
 
 async function handleCitySelect(city: CityInfo) {
   setLocation(city)
-  await getWeather()
+  await fetchAllData()
 }
 
 async function handleLocate(city: CityInfo) {
   setLocation(city)
-  await getWeather()
+  await fetchAllData()
 }
 
 // 每 10 分钟自动刷新天气数据
-useIntervalFn(getWeather, 10 * 60 * 1000)
+useIntervalFn(fetchAllData, 10 * 60 * 1000)
 
 onMounted(() => {
-  getWeather()
+  fetchAllData()
 })
 </script>
 
@@ -58,7 +75,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <!-- 右侧小卡片：指标 -->
+      <!-- 右侧小卡片：指标 (2x4 网格) -->
       <div class="indicators-grid">
         <div class="card card-indicator">
           💧 相对湿度<br />{{ weather?.humidity }}%
@@ -67,16 +84,22 @@ onMounted(() => {
           🌬️ 风速<br />{{ weather?.windSpeed }}km/h
         </div>
         <div class="card card-indicator">
-          🌧️ 过去1小时降水量<br />{{ weather?.precip }}mm
-        </div>
-        <div class="card card-indicator">
           🧭 风向<br />{{ weather?.windDir }}
         </div>
         <div class="card card-indicator">
-          🌡️ 气压<br />{{ weather?.pressure }}hPa
+          ☁️ 云量<br />{{ weather?.cloud }}%
         </div>
         <div class="card card-indicator">
           👁️ 能见度<br />{{ weather?.vis }}km
+        </div>
+        <div class="card card-indicator">
+          ☀️ UV指数<br />{{ uvIndex?.category || '-' }}
+        </div>
+        <div class="card card-indicator">
+          🌅 日出<br />{{ dayjs(sunrise).format('HH:mm') || '-' }}
+        </div>
+        <div class="card card-indicator">
+          🌇 日落<br />{{ dayjs(sunset).format('HH:mm') || '-' }}
         </div>
       </div>
 

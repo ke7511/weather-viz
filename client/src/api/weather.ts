@@ -30,3 +30,46 @@ export function getWeatherApi(locationId: string) {
     }
   })
 }
+
+// UV 紫外线指数
+export interface UVIndexInfo {
+  date: string
+  type: string
+  name: string
+  level: string
+  category: string
+  text: string
+}
+
+interface UVIndexResponse {
+  code: string
+  daily: UVIndexInfo[]
+}
+
+export function getUVIndexApi(locationId: string) {
+  return request.get<UVIndexResponse>(`/weather/uv`, {
+    params: {
+      locationId
+    }
+  })
+}
+
+// 日出日落
+export interface SunriseSunsetInfo {
+  sunrise: string
+  sunset: string
+}
+
+interface SunriseSunsetResponse {
+  code: string
+  sunrise: string
+  sunset: string
+}
+
+export function getSunriseSunsetApi(locationId: string) {
+  return request.get<SunriseSunsetResponse>(`/weather/sun`, {
+    params: {
+      locationId
+    }
+  })
+}
