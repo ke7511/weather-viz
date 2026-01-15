@@ -5,17 +5,12 @@ import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import { getWeatherApi, type weatherInfo } from '@/api/weather'
 import { useIntervalFn } from '@vueuse/core'
+import { useLocationStore } from '@/stores/location'
+import { storeToRefs } from 'pinia'
 
-const location = ref<CityInfo>({
-  id: '101010100',
-  name: '北京',
-  adm1: '北京市',
-  adm2: '北京',
-  country: '中国',
-  lat: '39.90499',
-  lon: '116.40529'
-})
-
+const locationStore = useLocationStore()
+const { location } = storeToRefs(locationStore)
+const { setLocation } = locationStore
 const weather = ref<weatherInfo | null>(null)
 
 async function getWeather() {
@@ -24,12 +19,12 @@ async function getWeather() {
 }
 
 async function handleCitySelect(city: CityInfo) {
-  location.value = city
+  setLocation(city)
   await getWeather()
 }
 
 async function handleLocate(city: CityInfo) {
-  location.value = city
+  setLocation(city)
   await getWeather()
 }
 

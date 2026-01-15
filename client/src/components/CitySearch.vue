@@ -33,7 +33,6 @@ function selectCity(city: CityInfo) {
   searchResult.value = []
   isSearch.value = false
   inputRef.value?.blur()
-
   emit('select', city)
 }
 </script>

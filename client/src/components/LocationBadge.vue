@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { getCityByLocationApi, type CityInfo } from '@/api/city'
+import { storeToRefs } from 'pinia'
+import { useLocationStore } from '@/stores/location'
 
-defineProps<{
-  location: CityInfo
-}>()
+const { location } = storeToRefs(useLocationStore())
 
 const emit = defineEmits<{
   locate: [city: CityInfo]
