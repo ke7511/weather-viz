@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CitySearch from '@/components/CitySearch.vue'
 import LocationBadge from '@/components/LocationBadge.vue'
+import TemperatureTrend from '@/components/TemperatureTrend.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import {
@@ -106,6 +107,7 @@ onMounted(() => {
       <!-- 温度趋势图 -->
       <section class="card card-chart">
         <h3>📈 温度趋势</h3>
+        <TemperatureTrend :weather="weather" />
       </section>
       <!-- 7天预报 -->
       <section class="card card-forecast">

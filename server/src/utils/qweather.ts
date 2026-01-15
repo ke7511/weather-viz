@@ -77,3 +77,10 @@ export async function getTrueSunriseSunset(locationId: string, date?: string) {
     date: date || dayjs().format('YYYYMMDD')
   })
 }
+
+/**
+ * 逐小时天气 API
+ */
+export async function getTrueHourlyWeather(locationId: string) {
+  return qweatherApi.get('/v7/weather/24h', { location: locationId })
+}

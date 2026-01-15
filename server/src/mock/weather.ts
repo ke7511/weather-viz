@@ -56,3 +56,30 @@ export const mockSunriseSunsetData = {
 export function getMockSunriseSunset() {
   return mockSunriseSunsetData
 }
+
+// 逐小时天气 mock 数据
+export const mockHourlyWeather = {
+  code: '200',
+  hourly: [
+    {
+      fxTime: '2020-06-30T21:40+08:00',
+      temp: '24',
+      icon: '101',
+      text: '多云',
+      wind360: '123',
+      windDir: '东南风',
+      windScale: '1',
+      windSpeed: '3',
+      humidity: '72',
+      precip: '0.0',
+      pressure: '1003',
+      vis: '16',
+      cloud: '10',
+      dew: '21'
+    }
+  ]
+}
+
+export function getMockHourlyWeather() {
+  return mockHourlyWeather
+}

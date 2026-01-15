@@ -73,3 +73,34 @@ export function getSunriseSunsetApi(locationId: string) {
     }
   })
 }
+
+// 逐小时天气
+export interface HourlyWeatherInfo {
+  fxTime: string
+  temp: string
+  icon: string
+  text: string
+  wind360: string
+  windDir: string
+  windScale: string
+  windSpeed: string
+  humidity: string
+  precip: string
+  pressure: string
+  vis: string
+  cloud: string
+  dew: string
+}
+
+interface HourlyWeatherResponse {
+  code: string
+  hourly: HourlyWeatherInfo[]
+}
+
+export function getHourlyWeatherApi(locationId: string) {
+  return request.get<HourlyWeatherResponse>(`/weather/hourly`, {
+    params: {
+      locationId
+    }
+  })
+}
