@@ -61,7 +61,7 @@ onMounted(() => {
       <!-- 右侧小卡片：指标 -->
       <div class="indicators-grid">
         <div class="card card-indicator">
-          💧 湿度<br />{{ weather?.humidity }}%
+          💧 相对湿度<br />{{ weather?.humidity }}%
         </div>
         <div class="card card-indicator">
           🌬️ 风速<br />{{ weather?.windSpeed }}km/h
