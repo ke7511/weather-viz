@@ -17,6 +17,7 @@
     "@vueuse/core": "^14.1.0",
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
+    "echarts": "^6.0.0",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

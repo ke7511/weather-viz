@@ -81,13 +81,13 @@ onMounted(() => {
           💧 相对湿度<br />{{ weather?.humidity }}%
         </div>
         <div class="card card-indicator">
+          ☁️ 云量<br />{{ weather?.cloud }}%
+        </div>
+        <div class="card card-indicator">
           🌬️ 风速<br />{{ weather?.windSpeed }}km/h
         </div>
         <div class="card card-indicator">
           🧭 风向<br />{{ weather?.windDir }}
-        </div>
-        <div class="card card-indicator">
-          ☁️ 云量<br />{{ weather?.cloud }}%
         </div>
         <div class="card card-indicator">
           👁️ 能见度<br />{{ weather?.vis }}km
@@ -192,8 +192,10 @@ onMounted(() => {
     }
 
     .indicators-grid {
+      grid-row: span 2;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(4, 1fr);
       gap: var(--spacing-md);
 
       .card-indicator {
@@ -202,6 +204,9 @@ onMounted(() => {
         font-size: 0.9rem;
         color: var(--color-text-secondary);
         transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         &:hover {
           box-shadow:
             0 0 0 2px rgba(16, 185, 129, 0.2),
