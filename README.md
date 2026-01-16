@@ -1,48 +1,133 @@
-# vue-project
+# Weather Viz 🌤️
 
-This template should help get you started developing with Vue 3 in Vite.
+一个现代化的天气可视化平台，基于 [和风天气 API](https://dev.qweather.com/) 提供天气数据，
+前端使用 Vue 3 + TypeScript，后端使用 Express 构建 API 服务，支持本地 Mock 与真实 API 两种模式。
 
-## Recommended IDE Setup
+## ✨ 功能特性
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- 🔍 城市搜索：支持中国城市模糊搜索
+- 🌡️ 实时天气：显示当前温度、体感温度、湿度、风速等信息
+- 📈 温度趋势：使用 ECharts 展示 24 小时温度变化
+- 📅 7 天预报：查看未来一周天气预报
+- ☀️ 日出日落与紫外线指数
+- 🎨 Glassmorphism UI：现代玻璃态设计风格
 
-## Recommended Browser Setup
+## 🛠️ 技术栈
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### 前端（client）
 
-## Type Support for `.vue` Imports in TS
+- Vue 3
+- TypeScript
+- Vite
+- Pinia + pinia-plugin-persistedstate
+- Vue Router
+- ECharts + vue-echarts
+- Axios
+- @vueuse/core
+- Day.js
+- normalize.css
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### 后端（server）
 
-## Customize configuration
+- Express
+- TypeScript
+- Axios
+- Day.js
+- dotenv
+- jose
+- CORS
 
-See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+## 🚀 快速开始
 
-```sh
+### 环境要求
+
+- Node.js ^20.19.0 或 >= 22.12.0
+- pnpm（推荐）
+
+### 安装依赖
+
+在项目根目录执行：
+
+```bash
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发模式
 
-```sh
+同时启动前端和后端开发服务器（推荐）：
+
+```bash
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+单独启动：
 
-```sh
+```bash
+# 仅启动前端
+pnpm dev:client
+
+# 仅启动后端
+pnpm dev:server
+```
+### 生产构建
+
+在根目录执行：
+
+```bash
 pnpm build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+会分别构建前端和后端：
 
-```sh
-pnpm lint
+- 前端输出到 `client/dist`
+- 后端编译到 `server/dist`
+
+## ⚙️ 环境配置
+
+### 1. 和风天气 JWT 配置
+
+后端使用 JWT 鉴权方式访问和风天气 API。配置文件示例见：
+
+- [server/.env.example](file:///d:/OneDrive/Destop/weather-viz/server/.env.example)
+
+首先复制示例文件：
+
+```bash
+cp server/.env.example server/.env
 ```
+
+在 `server/.env` 中配置以下变量（从[和风天气控制台](https://console.qweather.com/home)获取）：
+
+```env
+QWEATHER_PROJECT_ID=your_project_id     # 项目 ID
+QWEATHER_KID=your_kid                   # 凭据 ID
+QWEATHER_PRIVATE_KEY=your_private_key   # 私钥内容，单行，换行用 \n 表示
+QWEATHER_API_HOST=your_api_host         # API Host
+
+PORT=3000                               # 后端服务端口，可自行修改
+USE_MOCK=false                          # 是否强制使用 Mock 数据
+```
+
+说明：
+- 注意和风天气 API 的免费额度消耗。
+- 当 **未完整配置** 上述和风天气相关变量时，后端会自动降级为 **Mock 模式**。
+- 将 `USE_MOCK` 设置为 `true`，可以在本地开发时强制使用内置 Mock 数据，无需真实凭证。
+
+### 2. 前端配置
+
+前端通过环境变量 `VITE_API_BASE_URL` 访问后端 API，在未配置时默认值为：
+
+```ts
+http://localhost:3000/api
+```
+
+你可以在 `client/.env` 中显式设置：
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+## 📝 License
+
+MIT
