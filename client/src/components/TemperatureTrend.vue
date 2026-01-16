@@ -17,9 +17,15 @@ function toHourlyFormat(weather: weatherInfo): HourlyWeatherInfo {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { obsTime, feelsLike, ...rest } = weather
   return {
-    fxTime: dayjs().format('YYYY-MM-DDTHH:mm+08:00'),
+    fxTime: '现在',
     ...rest
   }
+}
+
+function formatTime(weather: HourlyWeatherInfo[]) {
+  return weather.map((d) =>
+    d.fxTime === '现在' ? '现在' : dayjs(d.fxTime).format('HH:mm')
+  )
 }
 
 // 标记是否已添加当前天气
@@ -67,7 +73,13 @@ const option = computed(() => ({
   },
   tooltip: {
     trigger: 'axis',
-    formatter: '{b}<br/>温度: {c}°C',
+    formatter: (params: Array<{ dataIndex: number }>) => {
+      if (!params[0]) return ''
+      const item = params[0].dataIndex
+      const data = hourlyWeather.value[item]
+      if (!data) return ''
+      return `${formatTime(hourlyWeather.value)[item]}<br/>温度: ${data.temp}°C<br/>天气: ${data.text}`
+    },
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderColor: '#10b981',
     borderWidth: 1,
@@ -86,12 +98,34 @@ const option = computed(() => ({
   xAxis: {
     type: 'category',
     boundaryGap: false,
-    data: hourlyWeather.value.map((d) => dayjs(d.fxTime).format('HH:mm')),
+    data: formatTime(hourlyWeather.value),
     axisLine: {
       lineStyle: { color: '#cbd5e1' }
     },
     axisLabel: {
-      color: '#64748b'
+      formatter: (value: string, index: number) => {
+        const icon = hourlyWeather.value[index]?.icon
+        return `{time|${value}}\n{icon${icon}|}`
+      },
+      rich: {
+        time: { color: '#64748b', fontSize: 12 },
+        // 动态生成每个图标的样式
+        ...hourlyWeather.value.reduce(
+          (acc, item) => {
+            if (item.icon && !acc[`icon${item.icon}`]) {
+              acc[`icon${item.icon}`] = {
+                backgroundColor: {
+                  image: `https://icons.qweather.com/assets/icons/${item.icon}.svg`
+                },
+                height: 20,
+                width: 20
+              }
+            }
+            return acc
+          },
+          {} as Record<string, object>
+        )
+      }
     }
   },
   yAxis: {
@@ -151,6 +185,44 @@ const option = computed(() => ({
         }
       },
       data: hourlyWeather.value.map((d) => d.temp)
+    }
+  ],
+  dataZoom: [
+    { type: 'inside', xAxisIndex: 0 },
+    {
+      type: 'slider',
+      xAxisIndex: 0,
+      height: 24,
+      bottom: 0,
+      borderColor: 'transparent',
+      backgroundColor: 'rgba(226, 232, 240, 0.5)',
+      fillerColor: 'rgba(16, 185, 129, 0.15)',
+      handleIcon:
+        'M-9.35,34.56V42m0-40V9.5m-2,0h4a2,2,0,0,1,2,2v21a2,2,0,0,1-2,2h-4a2,2,0,0,1-2-2v-21A2,2,0,0,1-11.35,9.5Z',
+      handleSize: '120%',
+      handleStyle: {
+        color: '#fff',
+        borderColor: '#10b981',
+        borderWidth: 1,
+        shadowBlur: 4,
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOffsetY: 2
+      },
+      dataBackground: {
+        lineStyle: { color: '#10b981', opacity: 0.3 },
+        areaStyle: { color: '#10b981', opacity: 0.1 }
+      },
+      selectedDataBackground: {
+        lineStyle: { color: '#10b981' },
+        areaStyle: { color: '#10b981', opacity: 0.2 }
+      },
+      moveHandleSize: 0,
+      emphasis: {
+        handleStyle: {
+          borderColor: '#059669',
+          shadowBlur: 6
+        }
+      }
     }
   ]
 }))

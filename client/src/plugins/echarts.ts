@@ -9,7 +9,8 @@ import {
   // 数据集组件
   DatasetComponent,
   // 内置数据转换器组件 (filter, sort)
-  TransformComponent
+  TransformComponent,
+  DataZoomComponent
 } from 'echarts/components'
 import { LabelLayout, UniversalTransition } from 'echarts/features'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -25,7 +26,8 @@ import type {
   GridComponentOption,
   LegendComponentOption,
   ToolboxComponentOption,
-  DatasetComponentOption
+  DatasetComponentOption,
+  DataZoomComponentOption
 } from 'echarts/components'
 import type { ComposeOption } from 'echarts/core'
 
@@ -39,6 +41,7 @@ type ECOption = ComposeOption<
   | LegendComponentOption
   | ToolboxComponentOption
   | DatasetComponentOption
+  | DataZoomComponentOption
 >
 
 // 注册必须的组件
@@ -50,6 +53,7 @@ echarts.use([
   ToolboxComponent,
   DatasetComponent,
   TransformComponent,
+  DataZoomComponent,
   BarChart,
   LineChart,
   LabelLayout,
