@@ -104,3 +104,27 @@ export function getHourlyWeatherApi(locationId: string) {
     }
   })
 }
+
+// 7天天气预报
+export interface DailyForecastInfo {
+  fxDate: string
+  tempMax: string
+  tempMin: string
+  iconDay: string
+  textDay: string
+  iconNight: string
+  textNight: string
+}
+
+interface DailyForecastResponse {
+  code: string
+  daily: DailyForecastInfo[]
+}
+
+export function getDailyForecastApi(locationId: string) {
+  return request.get<DailyForecastResponse>(`/weather/daily`, {
+    params: {
+      locationId
+    }
+  })
+}

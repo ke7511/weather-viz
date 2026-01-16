@@ -84,3 +84,10 @@ export async function getTrueSunriseSunset(locationId: string, date?: string) {
 export async function getTrueHourlyWeather(locationId: string) {
   return qweatherApi.get('/v7/weather/24h', { location: locationId })
 }
+
+/**
+ * 7天天气预报 API
+ */
+export async function getTrueDailyForecast(locationId: string) {
+  return qweatherApi.get('/v7/weather/7d', { location: locationId })
+}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VChart from 'vue-echarts'
-import '@/plugins/echarts' // 引入配置好的 echarts（注册渲染器和组件）
+import '@/plugins/echarts'
 import { computed, onMounted, ref, watch } from 'vue'
 import { getHourlyWeatherApi, type HourlyWeatherInfo } from '@/api/weather'
 import { useLocationStore } from '@/stores/location'

@@ -83,3 +83,77 @@ export const mockHourlyWeather = {
 export function getMockHourlyWeather() {
   return mockHourlyWeather
 }
+
+// 7天预报 mock 数据
+export const mockDailyForecastData = {
+  code: '200',
+  daily: [
+    {
+      fxDate: new Date().toISOString().split('T')[0],
+      tempMax: '28',
+      tempMin: '22',
+      iconDay: '100',
+      textDay: '晴',
+      iconNight: '150',
+      textNight: '晴'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      tempMax: '27',
+      tempMin: '21',
+      iconDay: '101',
+      textDay: '多云',
+      iconNight: '151',
+      textNight: '多云'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+      tempMax: '25',
+      tempMin: '19',
+      iconDay: '305',
+      textDay: '小雨',
+      iconNight: '305',
+      textNight: '小雨'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+      tempMax: '26',
+      tempMin: '20',
+      iconDay: '104',
+      textDay: '阴',
+      iconNight: '104',
+      textNight: '阴'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000 * 4).toISOString().split('T')[0],
+      tempMax: '29',
+      tempMin: '23',
+      iconDay: '100',
+      textDay: '晴',
+      iconNight: '150',
+      textNight: '晴'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
+      tempMax: '30',
+      tempMin: '24',
+      iconDay: '101',
+      textDay: '多云',
+      iconNight: '151',
+      textNight: '多云'
+    },
+    {
+      fxDate: new Date(Date.now() + 86400000 * 6).toISOString().split('T')[0],
+      tempMax: '28',
+      tempMin: '22',
+      iconDay: '302',
+      textDay: '雷阵雨',
+      iconNight: '302',
+      textNight: '雷阵雨'
+    }
+  ]
+}
+
+export function getMockDailyForecast() {
+  return mockDailyForecastData
+}

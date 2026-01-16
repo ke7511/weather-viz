@@ -2,6 +2,7 @@
 import CitySearch from '@/components/CitySearch.vue'
 import LocationBadge from '@/components/LocationBadge.vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
+import DailyForecast from '@/components/DailyForecast.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import {
@@ -113,7 +114,7 @@ onMounted(() => {
       <section class="card card-forecast">
         <h3>📅 未来7天</h3>
         <div class="forecast-list">
-          <!-- 7个天气卡片 -->
+          <DailyForecast />
         </div>
       </section>
     </main>
@@ -226,6 +227,16 @@ onMounted(() => {
         font-size: 1rem;
         color: var(--color-text);
       }
+    }
+
+    // 让 7 天预报卡片背景透明，显示内部玻璃效果
+    .card-forecast {
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border: none;
+      box-shadow: none;
+      padding: var(--spacing-md) 0;
     }
   }
 }

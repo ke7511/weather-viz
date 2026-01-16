@@ -3,7 +3,8 @@ import {
   getWeather,
   getUVIndex,
   getSunriseSunset,
-  getHourlyWeather
+  getHourlyWeather,
+  getDailyForecast
 } from '../services/weather'
 const router = express.Router()
 
@@ -11,5 +12,6 @@ router.get('/', getWeather)
 router.get('/uv', getUVIndex)
 router.get('/sun', getSunriseSunset)
 router.get('/hourly', getHourlyWeather)
+router.get('/daily', getDailyForecast)
 
 export default router

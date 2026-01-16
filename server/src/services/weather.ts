@@ -4,13 +4,15 @@ import {
   getTrueWeather,
   getTrueUVIndex,
   getTrueSunriseSunset,
-  getTrueHourlyWeather
+  getTrueHourlyWeather,
+  getTrueDailyForecast
 } from '../utils/qweather'
 import {
   getMockWeather,
   getMockUVIndex,
   getMockSunriseSunset,
-  getMockHourlyWeather
+  getMockHourlyWeather,
+  getMockDailyForecast
 } from '../mock/weather'
 
 export async function getWeather(req: Request, res: Response) {
@@ -110,6 +112,32 @@ export async function getHourlyWeather(req: Request, res: Response) {
     return res.json(data)
   } catch (error) {
     console.error('获取逐小时天气失败:', error)
+    return res.status(500).json({
+      code: '500',
+      message: '服务器内部错误'
+    })
+  }
+}
+
+export async function getDailyForecast(req: Request, res: Response) {
+  try {
+    const { locationId } = req.query
+    if (!locationId || typeof locationId !== 'string') {
+      return res.status(400).json({
+        code: '400',
+        message: '请提供城市ID'
+      })
+    }
+
+    if (shouldUseMock()) {
+      const data = getMockDailyForecast()
+      return res.json(data)
+    }
+
+    const data = await getTrueDailyForecast(locationId)
+    return res.json(data)
+  } catch (error) {
+    console.error('获取7天预报失败:', error)
     return res.status(500).json({
       code: '500',
       message: '服务器内部错误'
