@@ -64,11 +64,12 @@ onMounted(() => {
 })
 
 const option = computed(() => ({
+  backgroundColor: 'transparent',
   grid: {
     left: '3%',
     right: '3%',
-    top: '10%',
-    bottom: '10%',
+    top: '12%',
+    bottom: '12%',
     containLabel: true
   },
   tooltip: {
@@ -78,18 +79,33 @@ const option = computed(() => ({
       const item = params[0].dataIndex
       const data = hourlyWeather.value[item]
       if (!data) return ''
-      return `${formatTime(hourlyWeather.value)[item]}<br/>温度: ${data.temp}°C<br/>天气: ${data.text}`
+      return `
+        <div style="padding: 8px 12px;">
+          <div style="font-weight: 600; margin-bottom: 8px; color: #fff;">
+            ${formatTime(hourlyWeather.value)[item]}
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="font-size: 24px;">🌡️</span>
+            <span style="font-size: 18px; font-weight: 600; color: #10b981;">${data.temp}°C</span>
+          </div>
+          <div style="color: rgba(255,255,255,0.8);">${data.text}</div>
+        </div>
+      `
     },
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: '#10b981',
+    backgroundColor: 'rgba(15, 15, 35, 0.9)',
+    borderColor: 'rgba(16, 185, 129, 0.5)',
     borderWidth: 1,
+    borderRadius: 12,
+    padding: 0,
     textStyle: {
-      color: '#334155'
+      color: '#fff'
     },
+    extraCssText:
+      'backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);',
     axisPointer: {
       type: 'line',
       lineStyle: {
-        color: '#10b981',
+        color: 'rgba(16, 185, 129, 0.6)',
         width: 2,
         type: 'dashed'
       }
@@ -100,15 +116,24 @@ const option = computed(() => ({
     boundaryGap: false,
     data: formatTime(hourlyWeather.value),
     axisLine: {
-      lineStyle: { color: '#cbd5e1' }
+      lineStyle: { color: 'rgba(255, 255, 255, 0.1)' }
+    },
+    axisTick: {
+      show: false
     },
     axisLabel: {
+      color: 'rgba(255, 255, 255, 0.6)',
+      fontSize: 11,
       formatter: (value: string, index: number) => {
         const icon = hourlyWeather.value[index]?.icon
         return `{time|${value}}\n{icon${icon}|}`
       },
       rich: {
-        time: { color: '#64748b', fontSize: 12 },
+        time: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: 11,
+          lineHeight: 20
+        },
         // 动态生成每个图标的样式
         ...hourlyWeather.value.reduce(
           (acc, item) => {
@@ -131,43 +156,69 @@ const option = computed(() => ({
   yAxis: {
     type: 'value',
     axisLabel: {
-      formatter: '{value}°C',
-      color: '#64748b'
+      formatter: '{value}°',
+      color: 'rgba(255, 255, 255, 0.5)',
+      fontSize: 11
     },
     splitLine: {
-      lineStyle: { color: '#e2e8f0', type: 'dashed' }
+      lineStyle: {
+        color: 'rgba(255, 255, 255, 0.05)',
+        type: 'dashed'
+      }
+    },
+    axisLine: {
+      show: false
+    },
+    axisTick: {
+      show: false
     }
   },
   // 动画配置
   animation: true,
-  animationDuration: 1000,
+  animationDuration: 1200,
   animationEasing: 'cubicOut' as const,
   series: [
     {
       type: 'line',
-      smooth: true,
+      smooth: 0.4,
       symbol: 'circle',
-      symbolSize: 6,
+      symbolSize: 8,
       showSymbol: true,
       lineStyle: {
-        color: '#10b981',
-        width: 3
+        color: {
+          type: 'linear',
+          x: 0,
+          y: 0,
+          x2: 1,
+          y2: 0,
+          colorStops: [
+            { offset: 0, color: '#06b6d4' },
+            { offset: 0.5, color: '#10b981' },
+            { offset: 1, color: '#34d399' }
+          ]
+        },
+        width: 3,
+        shadowColor: 'rgba(16, 185, 129, 0.4)',
+        shadowBlur: 10,
+        shadowOffsetY: 5
       },
       itemStyle: {
         color: '#10b981',
-        borderColor: '#fff',
-        borderWidth: 2
+        borderColor: 'rgba(255, 255, 255, 0.8)',
+        borderWidth: 2,
+        shadowColor: 'rgba(16, 185, 129, 0.5)',
+        shadowBlur: 8
       },
       // 悬停高亮效果
       emphasis: {
-        scale: true, // 放大效果
+        scale: 1.5,
         focus: 'series',
         itemStyle: {
-          color: '#059669',
+          color: '#fff',
           borderColor: '#10b981',
           borderWidth: 3,
-          shadowColor: 'rgba(16, 185, 129, 0.5)',
-          shadowBlur: 10
+          shadowColor: 'rgba(16, 185, 129, 0.8)',
+          shadowBlur: 15
         },
         lineStyle: {
           width: 4
@@ -176,11 +227,14 @@ const option = computed(() => ({
       areaStyle: {
         color: {
           type: 'linear',
+          x: 0,
           y: 0,
+          x2: 0,
           y2: 1,
           colorStops: [
             { offset: 0, color: 'rgba(16, 185, 129, 0.4)' },
-            { offset: 1, color: 'rgba(16, 185, 129, 0.05)' }
+            { offset: 0.5, color: 'rgba(16, 185, 129, 0.15)' },
+            { offset: 1, color: 'rgba(16, 185, 129, 0)' }
           ]
         }
       },
@@ -188,39 +242,51 @@ const option = computed(() => ({
     }
   ],
   dataZoom: [
-    { type: 'inside', xAxisIndex: 0 },
+    {
+      type: 'inside',
+      xAxisIndex: 0,
+      zoomOnMouseWheel: true,
+      moveOnMouseMove: true,
+      moveOnMouseWheel: false
+    },
     {
       type: 'slider',
       xAxisIndex: 0,
-      height: 24,
+      height: 20,
       bottom: 0,
       borderColor: 'transparent',
-      backgroundColor: 'rgba(226, 232, 240, 0.5)',
-      fillerColor: 'rgba(16, 185, 129, 0.15)',
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      fillerColor: 'rgba(16, 185, 129, 0.2)',
+      borderRadius: 10,
       handleIcon:
         'M-9.35,34.56V42m0-40V9.5m-2,0h4a2,2,0,0,1,2,2v21a2,2,0,0,1-2,2h-4a2,2,0,0,1-2-2v-21A2,2,0,0,1-11.35,9.5Z',
       handleSize: '120%',
       handleStyle: {
-        color: '#fff',
+        color: '#1a1a2e',
         borderColor: '#10b981',
-        borderWidth: 1,
-        shadowBlur: 4,
-        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 2,
+        shadowBlur: 8,
+        shadowColor: 'rgba(16, 185, 129, 0.4)',
         shadowOffsetY: 2
       },
       dataBackground: {
-        lineStyle: { color: '#10b981', opacity: 0.3 },
-        areaStyle: { color: '#10b981', opacity: 0.1 }
+        lineStyle: { color: 'rgba(16, 185, 129, 0.3)' },
+        areaStyle: { color: 'rgba(16, 185, 129, 0.1)' }
       },
       selectedDataBackground: {
         lineStyle: { color: '#10b981' },
-        areaStyle: { color: '#10b981', opacity: 0.2 }
+        areaStyle: { color: 'rgba(16, 185, 129, 0.25)' }
       },
       moveHandleSize: 0,
+      textStyle: {
+        color: 'rgba(255, 255, 255, 0.5)',
+        fontSize: 10
+      },
       emphasis: {
         handleStyle: {
-          borderColor: '#059669',
-          shadowBlur: 6
+          borderColor: '#34d399',
+          shadowBlur: 12,
+          shadowColor: 'rgba(16, 185, 129, 0.6)'
         }
       }
     }
@@ -229,12 +295,39 @@ const option = computed(() => ({
 </script>
 
 <template>
-  <v-chart :option="option" autoresize class="container" />
+  <div class="chart-wrapper">
+    <v-chart :option="option" autoresize class="chart-container" />
+  </div>
 </template>
 
 <style scoped lang="scss">
-.container {
+.chart-wrapper {
+  position: relative;
+  padding: var(--spacing-sm);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba(16, 185, 129, 0.1) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+}
+
+.chart-container {
   width: 100%;
-  height: 300px;
+  height: 320px;
 }
 </style>
