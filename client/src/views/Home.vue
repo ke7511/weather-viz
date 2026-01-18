@@ -291,6 +291,8 @@ onMounted(() => {
 
 /* ========== 顶部导航 ========== */
 .header {
+  position: relative;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;

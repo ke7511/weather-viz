@@ -122,6 +122,9 @@ function selectCity(city: CityInfo) {
       -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
@@ -178,6 +181,7 @@ function selectCity(city: CityInfo) {
   }
 
   .search-result {
+    z-index: 1000;
     position: absolute;
     top: calc(100% + var(--spacing-sm));
     left: 0;
