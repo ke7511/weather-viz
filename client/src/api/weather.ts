@@ -128,3 +128,12 @@ export function getDailyForecastApi(locationId: string) {
     }
   })
 }
+
+export function getHourlyWeather168Api(locationId: string, day: number) {
+  return request.get<HourlyWeatherResponse>(`/weather/hourly168`, {
+    params: {
+      locationId,
+      day
+    }
+  })
+}

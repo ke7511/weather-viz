@@ -10,7 +10,9 @@ import {
   getUVIndexApi,
   getSunriseSunsetApi,
   type weatherInfo,
-  type UVIndexInfo
+  type UVIndexInfo,
+  type HourlyWeatherInfo,
+  getHourlyWeatherApi
 } from '@/api/weather'
 import { useIntervalFn } from '@vueuse/core'
 import { useLocationStore } from '@/stores/location'
@@ -24,25 +26,38 @@ const weather = ref<weatherInfo | null>(null)
 const uvIndex = ref<UVIndexInfo | null>(null)
 const sunrise = ref<string>('')
 const sunset = ref<string>('')
+const hourlyWeather = ref<HourlyWeatherInfo[]>([])
 
 async function fetchAllData() {
-  const [weatherRes, uvRes, sunRes] = await Promise.all([
+  const [weatherRes, uvRes, sunRes, hourlyWeatherRes] = await Promise.all([
     getWeatherApi(location.value.id),
     getUVIndexApi(location.value.id),
-    getSunriseSunsetApi(location.value.id)
+    getSunriseSunsetApi(location.value.id),
+    getHourlyWeatherApi(location.value.id)
   ])
   weather.value = weatherRes.now
   uvIndex.value = uvRes.daily?.[0] || null
   sunrise.value = sunRes.sunrise || ''
   sunset.value = sunRes.sunset || ''
+  hourlyWeather.value = hourlyWeatherRes.hourly
+  formatHourlyWeather()
+}
+
+// 将当前天气转换为逐小时天气格式
+function toHourlyFormat(): HourlyWeatherInfo {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { obsTime, feelsLike, ...rest } = weather.value!
+  return {
+    fxTime: '现在',
+    ...rest
+  }
+}
+
+function formatHourlyWeather() {
+  hourlyWeather.value.unshift(toHourlyFormat())
 }
 
 async function handleCitySelect(city: CityInfo) {
-  setLocation(city)
-  await fetchAllData()
-}
-
-async function handleLocate(city: CityInfo) {
   setLocation(city)
   await fetchAllData()
 }
@@ -61,7 +76,7 @@ onMounted(() => {
     <header class="header">
       <div class="logo">🌤️ Weather Viz</div>
       <CitySearch @select="handleCitySelect" />
-      <LocationBadge :location="location" @locate="handleLocate" />
+      <LocationBadge :location="location" @locate="handleCitySelect" />
     </header>
 
     <!-- 主体 Bento Grid -->
@@ -106,17 +121,9 @@ onMounted(() => {
       </div>
 
       <!-- 温度趋势图 -->
-      <section class="card card-chart">
-        <h3>📈 温度趋势</h3>
-        <TemperatureTrend :weather="weather" />
-      </section>
+      <TemperatureTrend :hourly-weather="hourlyWeather" />
       <!-- 7天预报 -->
-      <section class="card card-forecast">
-        <h3>📅 未来7天</h3>
-        <div class="forecast-list">
-          <DailyForecast />
-        </div>
-      </section>
+      <DailyForecast />
     </main>
 
     <!-- 数据来源声明 -->
@@ -165,16 +172,6 @@ onMounted(() => {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: auto auto;
     gap: var(--spacing-lg);
-
-    .card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
-      box-shadow: var(--shadow);
-    }
 
     /* 主天气卡片 */
     .card-main {
@@ -228,27 +225,6 @@ onMounted(() => {
             0 4px 16px rgba(0, 0, 0, 0.08);
         }
       }
-    }
-    /* 预报和图表 */
-    .card-forecast,
-    .card-chart {
-      grid-column: span 2;
-
-      h3 {
-        margin: 0 0 var(--spacing-md) 0;
-        font-size: 1rem;
-        color: var(--color-text);
-      }
-    }
-
-    // 让 7 天预报卡片背景透明，显示内部玻璃效果
-    .card-forecast {
-      background: transparent;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border: none;
-      box-shadow: none;
-      padding: var(--spacing-md) 0;
     }
   }
 

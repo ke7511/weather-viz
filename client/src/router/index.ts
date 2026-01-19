@@ -7,6 +7,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/Home.vue')
+    },
+    {
+      path: '/detail/:day',
+      name: 'DailyDetail',
+      component: () => import('@/views/DailyDetail.vue'),
+      props: true
     }
   ]
 })

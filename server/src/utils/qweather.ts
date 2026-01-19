@@ -79,10 +79,17 @@ export async function getTrueSunriseSunset(locationId: string, date?: string) {
 }
 
 /**
- * 逐小时天气 API
+ * 逐小时天气 API - 24小时
  */
 export async function getTrueHourlyWeather(locationId: string) {
   return qweatherApi.get('/v7/weather/24h', { location: locationId })
+}
+
+/**
+ * 逐小时天气 API - 168小时（7天）
+ */
+export async function getTrueHourlyWeather168(locationId: string) {
+  return qweatherApi.get('/v7/weather/168h', { location: locationId })
 }
 
 /**

@@ -84,6 +84,62 @@ export function getMockHourlyWeather() {
   return mockHourlyWeather
 }
 
+// 168小时（7天）逐时预报 mock 数据
+function generateMockHourly168() {
+  const hourly = []
+  const now = new Date()
+  // 设置到当前小时的整点
+  now.setMinutes(0, 0, 0)
+
+  const weatherTypes = [
+    { icon: '100', text: '晴' },
+    { icon: '101', text: '多云' },
+    { icon: '104', text: '阴' },
+    { icon: '305', text: '小雨' }
+  ]
+
+  for (let i = 0; i < 168; i++) {
+    const time = new Date(now.getTime() + i * 3600000)
+    const hour = time.getHours()
+
+    // 模拟温度变化：白天高，夜间低
+    const baseTemp = 22
+    const tempVariation = Math.sin(((hour - 6) / 24) * Math.PI * 2) * 6
+    const temp = Math.round(
+      baseTemp + tempVariation + (Math.random() - 0.5) * 2
+    )
+
+    // 每天随机一种天气
+    const dayIndex = Math.floor(i / 24)
+    const weather = weatherTypes[dayIndex % weatherTypes.length]
+
+    hourly.push({
+      fxTime: time.toISOString().replace('Z', '+08:00'),
+      temp: String(temp),
+      icon: weather.icon,
+      text: weather.text,
+      wind360: String(Math.floor(Math.random() * 360)),
+      windDir: '东南风',
+      windScale: String(Math.floor(Math.random() * 3) + 1),
+      windSpeed: String(Math.floor(Math.random() * 15) + 5),
+      humidity: String(Math.floor(Math.random() * 30) + 50),
+      pop: String(
+        weather.icon === '305' ? Math.floor(Math.random() * 50) + 30 : 0
+      ),
+      precip: weather.icon === '305' ? '0.5' : '0.0',
+      pressure: String(Math.floor(Math.random() * 20) + 1010),
+      cloud: String(Math.floor(Math.random() * 50)),
+      dew: String(temp - 5)
+    })
+  }
+
+  return { code: '200', hourly }
+}
+
+export function getMockHourlyWeather168() {
+  return generateMockHourly168()
+}
+
 // 7天预报 mock 数据
 export const mockDailyForecastData = {
   code: '200',
