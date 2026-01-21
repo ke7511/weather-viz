@@ -164,7 +164,7 @@ export async function getHourlyWeather168(req: Request, res: Response) {
       data = (await getTrueHourlyWeather168(locationId)) as typeof data
     }
 
-    // 如果传入了 day 参数，返回指定那一天的 24 小时数据
+    // 如果传入了 day 参数，返回指定那一天的数据
     if (day !== undefined) {
       const dayIndex = parseInt(day as string, 10)
       if (isNaN(dayIndex) || dayIndex < 0 || dayIndex > 6) {
@@ -174,8 +174,22 @@ export async function getHourlyWeather168(req: Request, res: Response) {
         })
       }
 
-      const startIndex = dayIndex * 24
-      const endIndex = startIndex + 24
+      const currentHour = new Date().getHours()
+      const hoursRemainingToday = 24 - currentHour // 今天剩余的小时数
+
+      let startIndex: number
+      let endIndex: number
+
+      if (dayIndex === 0) {
+        // 今天：从索引 0 开始（即当前时刻）
+        startIndex = 0
+        endIndex = 24
+      } else {
+        // 其他天：需要跳过今天剩余的小时，从那天的 0 点开始
+        startIndex = hoursRemainingToday - 1 + (dayIndex - 1) * 24
+        endIndex = startIndex + 24
+      }
+
       const slicedHourly = data.hourly?.slice(startIndex, endIndex) || []
 
       return res.json({

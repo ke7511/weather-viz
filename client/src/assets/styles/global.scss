@@ -7,3 +7,9 @@
   padding: var(--spacing-lg);
   box-shadow: var(--shadow);
 }
+.home {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f0fdf4 50%, #fef3c7 100%);
+  padding: var(--spacing-lg);
+}

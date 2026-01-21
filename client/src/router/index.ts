@@ -12,7 +12,7 @@ const router = createRouter({
       path: '/detail/:day',
       name: 'DailyDetail',
       component: () => import('@/views/DailyDetail.vue'),
-      props: true
+      props: (route) => ({ day: Number(route.params.day) })
     }
   ]
 })

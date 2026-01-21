@@ -142,11 +142,6 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .home {
-  min-height: 100vh;
-  background: var(--color-bg);
-  padding: var(--spacing-lg);
-  background: linear-gradient(135deg, #e0f7fa 0%, #f0fdf4 50%, #fef3c7 100%);
-
   /* 顶部导航 */
   .header {
     position: relative;
