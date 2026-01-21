@@ -51,9 +51,7 @@ onMounted(() => {
       <button class="back-btn" @click="$router.back()">← 返回</button>
       <h3>📅 {{ formattedDate }}</h3>
     </header>
-
-    <!-- 主体内容：左右布局 -->
-    <div class="main-content">
+    <main class="main-content">
       <!-- 左侧：天气概览 -->
       <section v-if="dailyForecast" class="card weather-overview">
         <div class="weather-icon">
@@ -72,9 +70,9 @@ onMounted(() => {
 
       <!-- 右侧：指标网格 -->
       <IndicatorsGrid :weather="dailyForecast" :sunset="sunset" />
-    </div>
 
-    <TemperatureTrend :hourly-weather="hourlyWeather" />
+      <TemperatureTrend :hourly-weather="hourlyWeather" />
+    </main>
   </div>
 </template>
 
@@ -112,84 +110,58 @@ onMounted(() => {
 }
 
 .main-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-}
 
-.weather-overview {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--spacing-xl);
-  min-height: 200px;
-
-  .weather-icon {
-    font-size: 5rem;
-    line-height: 1;
-    margin-bottom: var(--spacing-md);
-  }
-
-  .weather-info {
-    .weather-text {
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: var(--color-text);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .temp-range {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin-bottom: var(--spacing-sm);
-
-      .temp-max {
-        color: #f97316;
-      }
-      .divider {
-        color: #94a3b8;
-        margin: 0 4px;
-      }
-      .temp-min {
-        color: #0ea5e9;
-      }
-    }
-
-    .night-info {
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
-    }
-  }
-}
-
-.indicators-grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: var(--spacing-md);
-
-  .indicator {
-    text-align: center;
-    padding: var(--spacing-md);
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+  .weather-overview {
+    grid-row: span 2;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-  }
-}
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-xl);
+    min-height: 200px;
 
-.chart-section {
-  h4 {
-    margin: 0 0 var(--spacing-md) 0;
-    font-size: 1rem;
-    color: var(--color-text);
+    .weather-icon {
+      font-size: 5rem;
+      line-height: 1;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .weather-info {
+      .weather-text {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--color-text);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .temp-range {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+
+        .temp-max {
+          color: #f97316;
+        }
+        .divider {
+          color: #94a3b8;
+          margin: 0 4px;
+        }
+        .temp-min {
+          color: #0ea5e9;
+        }
+      }
+
+      .night-info {
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+      }
+    }
   }
 }
 </style>
