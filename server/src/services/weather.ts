@@ -71,7 +71,7 @@ export async function getUVIndex(req: Request, res: Response) {
 
 export async function getSunriseSunset(req: Request, res: Response) {
   try {
-    const { locationId } = req.query
+    const { locationId, date } = req.query
     if (!locationId || typeof locationId !== 'string') {
       return res.status(400).json({
         code: '400',
@@ -84,7 +84,10 @@ export async function getSunriseSunset(req: Request, res: Response) {
       return res.json(data)
     }
 
-    const data = await getTrueSunriseSunset(locationId)
+    const data = await getTrueSunriseSunset(
+      locationId,
+      date as string | undefined
+    )
     return res.json(data)
   } catch (error) {
     console.error('获取日出日落失败:', error)

@@ -3,6 +3,7 @@ import CitySearch from '@/components/CitySearch.vue'
 import LocationBadge from '@/components/LocationBadge.vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
 import DailyForecast from '@/components/DailyForecast.vue'
+import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import {
@@ -17,7 +18,6 @@ import {
 import { useIntervalFn } from '@vueuse/core'
 import { useLocationStore } from '@/stores/location'
 import { storeToRefs } from 'pinia'
-import dayjs from 'dayjs'
 
 const locationStore = useLocationStore()
 const { location } = storeToRefs(locationStore)
@@ -93,32 +93,12 @@ onMounted(() => {
       </section>
 
       <!-- 右侧小卡片：指标 (2x4 网格) -->
-      <div class="indicators-grid">
-        <div class="card card-indicator">
-          💧 相对湿度<br />{{ weather?.humidity }}%
-        </div>
-        <div class="card card-indicator">
-          ☁️ 云量<br />{{ weather?.cloud }}%
-        </div>
-        <div class="card card-indicator">
-          🌬️ 风速<br />{{ weather?.windSpeed }}km/h
-        </div>
-        <div class="card card-indicator">
-          🧭 风向<br />{{ weather?.windDir }}
-        </div>
-        <div class="card card-indicator">
-          👁️ 能见度<br />{{ weather?.vis }}km
-        </div>
-        <div class="card card-indicator">
-          ☀️ UV指数<br />{{ uvIndex?.category || '-' }}
-        </div>
-        <div class="card card-indicator">
-          🌅 日出<br />{{ dayjs(sunrise).format('HH:mm') || '-' }}
-        </div>
-        <div class="card card-indicator">
-          🌇 日落<br />{{ dayjs(sunset).format('HH:mm') || '-' }}
-        </div>
-      </div>
+      <IndicatorsGrid
+        :weather="weather"
+        :uv-index="uvIndex"
+        :sunrise="sunrise"
+        :sunset="sunset"
+      />
 
       <!-- 温度趋势图 -->
       <TemperatureTrend :hourly-weather="hourlyWeather" />
@@ -195,30 +175,6 @@ onMounted(() => {
       .desc {
         color: var(--color-text-secondary);
         margin-top: var(--spacing-sm);
-      }
-    }
-
-    .indicators-grid {
-      grid-row: span 2;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      gap: var(--spacing-md);
-
-      .card-indicator {
-        text-align: center;
-        padding: var(--spacing-md);
-        font-size: 0.9rem;
-        color: var(--color-text-secondary);
-        transition: all 0.2s;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        &:hover {
-          box-shadow:
-            0 0 0 2px rgba(16, 185, 129, 0.2),
-            0 4px 16px rgba(0, 0, 0, 0.08);
-        }
       }
     }
   }

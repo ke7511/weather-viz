@@ -66,10 +66,11 @@ interface SunriseSunsetResponse {
   sunset: string
 }
 
-export function getSunriseSunsetApi(locationId: string) {
+export function getSunriseSunsetApi(locationId: string, date?: string) {
   return request.get<SunriseSunsetResponse>(`/weather/sun`, {
     params: {
-      locationId
+      locationId,
+      date
     }
   })
 }
@@ -114,6 +115,13 @@ export interface DailyForecastInfo {
   textDay: string
   iconNight: string
   textNight: string
+  humidity?: string
+  cloud?: string
+  windSpeedDay?: string
+  windDirDay?: string
+  windSpeedNight?: string
+  windDirNight?: string
+  vis?: string
 }
 
 interface DailyForecastResponse {

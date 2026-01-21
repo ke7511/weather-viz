@@ -151,7 +151,12 @@ export const mockDailyForecastData = {
       iconDay: '100',
       textDay: '晴',
       iconNight: '150',
-      textNight: '晴'
+      textNight: '晴',
+      humidity: '65',
+      cloud: '15',
+      windSpeedDay: '12',
+      windDirDay: '东南风',
+      vis: '25'
     },
     {
       fxDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
@@ -160,7 +165,12 @@ export const mockDailyForecastData = {
       iconDay: '101',
       textDay: '多云',
       iconNight: '151',
-      textNight: '多云'
+      textNight: '多云',
+      humidity: '70',
+      cloud: '40',
+      windSpeedDay: '10',
+      windDirDay: '南风',
+      vis: '20'
     },
     {
       fxDate: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
@@ -169,7 +179,12 @@ export const mockDailyForecastData = {
       iconDay: '305',
       textDay: '小雨',
       iconNight: '305',
-      textNight: '小雨'
+      textNight: '小雨',
+      humidity: '85',
+      cloud: '80',
+      windSpeedDay: '8',
+      windDirDay: '东风',
+      vis: '10'
     },
     {
       fxDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
@@ -178,7 +193,12 @@ export const mockDailyForecastData = {
       iconDay: '104',
       textDay: '阴',
       iconNight: '104',
-      textNight: '阴'
+      textNight: '阴',
+      humidity: '75',
+      cloud: '90',
+      windSpeedDay: '6',
+      windDirDay: '北风',
+      vis: '15'
     },
     {
       fxDate: new Date(Date.now() + 86400000 * 4).toISOString().split('T')[0],
@@ -187,7 +207,12 @@ export const mockDailyForecastData = {
       iconDay: '100',
       textDay: '晴',
       iconNight: '150',
-      textNight: '晴'
+      textNight: '晴',
+      humidity: '55',
+      cloud: '10',
+      windSpeedDay: '15',
+      windDirDay: '西南风',
+      vis: '30'
     },
     {
       fxDate: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0],
@@ -196,7 +221,12 @@ export const mockDailyForecastData = {
       iconDay: '101',
       textDay: '多云',
       iconNight: '151',
-      textNight: '多云'
+      textNight: '多云',
+      humidity: '60',
+      cloud: '35',
+      windSpeedDay: '11',
+      windDirDay: '东南风',
+      vis: '22'
     },
     {
       fxDate: new Date(Date.now() + 86400000 * 6).toISOString().split('T')[0],
@@ -205,7 +235,12 @@ export const mockDailyForecastData = {
       iconDay: '302',
       textDay: '雷阵雨',
       iconNight: '302',
-      textNight: '雷阵雨'
+      textNight: '雷阵雨',
+      humidity: '90',
+      cloud: '95',
+      windSpeedDay: '20',
+      windDirDay: '西北风',
+      vis: '8'
     }
   ]
 }

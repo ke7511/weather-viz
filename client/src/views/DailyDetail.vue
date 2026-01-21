@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { getHourlyWeather168Api } from '@/api/weather'
+import {
+  getHourlyWeather168Api,
+  getDailyForecastApi,
+  type HourlyWeatherInfo,
+  type DailyForecastInfo
+} from '@/api/weather'
 import { useLocationStore } from '@/stores/location'
 import { computed, onMounted, ref } from 'vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
-import type { HourlyWeatherInfo } from '@/api/weather'
+import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 dayjs.locale('zh-cn')
@@ -12,6 +17,8 @@ const props = defineProps<{ day: number }>()
 
 const locationStore = useLocationStore()
 const hourlyWeather = ref<HourlyWeatherInfo[]>([])
+const dailyForecast = ref<DailyForecastInfo | null>(null)
+const sunset = ref('')
 
 // 根据 day 参数计算目标日期
 const targetDate = computed(() => dayjs().add(props.day, 'day'))
@@ -24,13 +31,17 @@ const formattedDate = computed(() => {
   return res
 })
 
-async function getHourlyWeather168() {
-  const res = await getHourlyWeather168Api(locationStore.location.id, props.day)
-  hourlyWeather.value = res.hourly
-  console.log(hourlyWeather.value)
+async function fetchData() {
+  const [hourlyRes, dailyRes] = await Promise.all([
+    getHourlyWeather168Api(locationStore.location.id, props.day),
+    getDailyForecastApi(locationStore.location.id)
+  ])
+  hourlyWeather.value = hourlyRes.hourly
+  dailyForecast.value = dailyRes.daily[props.day] || null
 }
+
 onMounted(() => {
-  getHourlyWeather168()
+  fetchData()
 })
 </script>
 
@@ -40,6 +51,29 @@ onMounted(() => {
       <button class="back-btn" @click="$router.back()">← 返回</button>
       <h3>📅 {{ formattedDate }}</h3>
     </header>
+
+    <!-- 主体内容：左右布局 -->
+    <div class="main-content">
+      <!-- 左侧：天气概览 -->
+      <section v-if="dailyForecast" class="card weather-overview">
+        <div class="weather-icon">
+          <i :class="'qi-' + dailyForecast.iconDay"></i>
+        </div>
+        <div class="weather-info">
+          <div class="weather-text">{{ dailyForecast.textDay }}</div>
+          <div class="temp-range">
+            <span class="temp-max">{{ dailyForecast.tempMax }}°</span>
+            <span class="divider">/</span>
+            <span class="temp-min">{{ dailyForecast.tempMin }}°</span>
+          </div>
+          <div class="night-info">🌙 夜间 {{ dailyForecast.textNight }}</div>
+        </div>
+      </section>
+
+      <!-- 右侧：指标网格 -->
+      <IndicatorsGrid :weather="dailyForecast" :sunset="sunset" />
+    </div>
+
     <TemperatureTrend :hourly-weather="hourlyWeather" />
   </div>
 </template>
@@ -74,6 +108,88 @@ onMounted(() => {
     margin: 0;
     flex: 1;
     text-align: center;
+  }
+}
+
+.main-content {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.weather-overview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-xl);
+  min-height: 200px;
+
+  .weather-icon {
+    font-size: 5rem;
+    line-height: 1;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .weather-info {
+    .weather-text {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .temp-range {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+
+      .temp-max {
+        color: #f97316;
+      }
+      .divider {
+        color: #94a3b8;
+        margin: 0 4px;
+      }
+      .temp-min {
+        color: #0ea5e9;
+      }
+    }
+
+    .night-info {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+.indicators-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: var(--spacing-md);
+
+  .indicator {
+    text-align: center;
+    padding: var(--spacing-md);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.chart-section {
+  h4 {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: 1rem;
+    color: var(--color-text);
   }
 }
 </style>
