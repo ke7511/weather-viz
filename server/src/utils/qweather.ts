@@ -61,11 +61,11 @@ export async function getTrueWeather(locationId: string) {
 }
 
 /**
- * 生活指数 API - UV 紫外线指数
+ * 生活指数 API - UV 紫外线指数（3天）
  * type=5 表示紫外线指数
  */
-export async function getTrueUVIndex(locationId: string) {
-  return qweatherApi.get('/v7/indices/1d', { location: locationId, type: '5' })
+export async function getTrueUV(locationId: string) {
+  return qweatherApi.get('/v7/indices/3d', { location: locationId, type: '5' })
 }
 
 /**

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { weatherInfo, DailyForecastInfo } from '@/api/weather'
-import type { UVIndexInfo } from '@/api/weather'
+import type { UVIndexInfo } from '@/api/indices'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
 
 const props = defineProps<{
   weather: weatherInfo | DailyForecastInfo | null
-  uvIndex?: UVIndexInfo | null
+  uvIndex: UVIndexInfo | null
   sunrise?: string
-  sunset: string
+  sunset?: string
 }>()
 
 // 兼容的计算属性

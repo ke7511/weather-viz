@@ -11,6 +11,7 @@ import TemperatureTrend from '@/components/TemperatureTrend.vue'
 import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import { getUVIndexApi, type UVIndexInfo } from '@/api/indices'
 dayjs.locale('zh-cn')
 
 const props = defineProps<{ day: number }>()
@@ -18,7 +19,22 @@ const props = defineProps<{ day: number }>()
 const locationStore = useLocationStore()
 const hourlyWeather = ref<HourlyWeatherInfo[]>([])
 const dailyForecast = ref<DailyForecastInfo | null>(null)
-const sunset = ref('')
+const uvIndex = ref<UVIndexInfo | null>(null)
+
+async function fetchData() {
+  const [hourlyRes, dailyRes, uvRes] = await Promise.all([
+    getHourlyWeather168Api(locationStore.location.id, props.day),
+    getDailyForecastApi(locationStore.location.id),
+    getUVIndexApi(locationStore.location.id, props.day)
+  ])
+  hourlyWeather.value = hourlyRes.hourly
+  dailyForecast.value = dailyRes.daily[props.day] || null
+  uvIndex.value = uvRes.daily[0] || null
+}
+
+onMounted(() => {
+  fetchData()
+})
 
 // 根据 day 参数计算目标日期
 const targetDate = computed(() => dayjs().add(props.day, 'day'))
@@ -29,19 +45,6 @@ const formattedDate = computed(() => {
   if (props.day === 0) return '今天 ' + res
   if (props.day === 1) return '明天 ' + res
   return res
-})
-
-async function fetchData() {
-  const [hourlyRes, dailyRes] = await Promise.all([
-    getHourlyWeather168Api(locationStore.location.id, props.day),
-    getDailyForecastApi(locationStore.location.id)
-  ])
-  hourlyWeather.value = hourlyRes.hourly
-  dailyForecast.value = dailyRes.daily[props.day] || null
-}
-
-onMounted(() => {
-  fetchData()
 })
 </script>
 
@@ -69,7 +72,7 @@ onMounted(() => {
       </section>
 
       <!-- 右侧：指标网格 -->
-      <IndicatorsGrid :weather="dailyForecast" :sunset="sunset" />
+      <IndicatorsGrid :weather="dailyForecast" :uv-index="uvIndex" />
 
       <TemperatureTrend :hourly-weather="hourlyWeather" />
     </main>

@@ -8,13 +8,12 @@ import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import {
   getWeatherApi,
-  getUVIndexApi,
   getSunriseSunsetApi,
   type weatherInfo,
-  type UVIndexInfo,
   type HourlyWeatherInfo,
   getHourlyWeatherApi
 } from '@/api/weather'
+import { getUVIndexApi, type UVIndexInfo } from '@/api/indices'
 import { useIntervalFn } from '@vueuse/core'
 import { useLocationStore } from '@/stores/location'
 import { storeToRefs } from 'pinia'
