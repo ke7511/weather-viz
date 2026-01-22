@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { getCityByLocationApi, type CityInfo } from '@/api/city'
 import { storeToRefs } from 'pinia'
 import { useLocationStore } from '@/stores/location'
+import Icon from '@/components/Icon.vue'
 
 const { location } = storeToRefs(useLocationStore())
 
@@ -59,7 +60,12 @@ async function handleLocate() {
 
 <template>
   <div class="location-badge" title="点击获取当前位置" @click="handleLocate">
-    <span class="location-icon">{{ isLocating ? '⏳' : '📍' }}</span>
+    <div class="location-icon">
+      <span v-if="isLocating">⏳</span>
+      <span v-else>
+        <Icon name="location" style="color: #ff6b6b; vertical-align: -2px" />
+      </span>
+    </div>
     <span class="location-text">{{
       isLocating ? '定位中...' : location?.name
     }}</span>

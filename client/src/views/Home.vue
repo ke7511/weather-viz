@@ -4,6 +4,7 @@ import LocationBadge from '@/modules/home/LocationBadge.vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
 import DailyForecast from '@/modules/home/DailyForecast.vue'
 import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
+import Icon from '@/components/Icon.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
 import {
@@ -82,7 +83,10 @@ onMounted(() => {
     <main class="bento-grid">
       <!-- 左侧大卡片：当前天气 -->
       <section class="card card-main">
-        <div class="city">📍 {{ location?.name }}</div>
+        <div class="city">
+          <Icon name="location" style="color: #ff6b6b" />
+          {{ location?.name }}
+        </div>
         <div class="weather-icon"><i :class="'qi-' + weather?.icon"></i></div>
         <div class="temp">{{ weather?.temp }}°C</div>
 
