@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CitySearch from '@/components/CitySearch.vue'
-import LocationBadge from '@/components/LocationBadge.vue'
+import CitySearch from '@/modules/home/CitySearch.vue'
+import LocationBadge from '@/modules/home/LocationBadge.vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
-import DailyForecast from '@/components/DailyForecast.vue'
+import DailyForecast from '@/modules/home/DailyForecast.vue'
 import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import type { CityInfo } from '@/api/city'
 import { onMounted, ref } from 'vue'
