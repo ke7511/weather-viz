@@ -79,6 +79,7 @@ const option = computed(() => ({
   },
   yAxis: {
     type: 'value',
+    scale: true,
     axisLabel: {
       formatter: '{value}°C',
       color: '#64748b'
@@ -123,6 +124,7 @@ const option = computed(() => ({
         }
       },
       areaStyle: {
+        // origin: 'start', // 阴影填充到图表底部，而非 y=0
         color: {
           type: 'linear',
           y: 0,
