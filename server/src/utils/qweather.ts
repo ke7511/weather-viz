@@ -98,3 +98,12 @@ export async function getTrueHourlyWeather168(locationId: string) {
 export async function getTrueDailyForecast(locationId: string) {
   return qweatherApi.get('/v7/weather/7d', { location: locationId })
 }
+
+/**
+ * 空气质量 API v1 - 实时 AQI
+ * 接口路径：/airquality/v1/current/{latitude}/{longitude}
+ * 注意：新版 API v1 只支持经纬度查询，不支持城市 ID
+ */
+export async function getTrueAirQuality(lat: string, lon: string) {
+  return qweatherApi.get(`/airquality/v1/current/${lat}/${lon}`)
+}

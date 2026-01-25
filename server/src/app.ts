@@ -4,6 +4,7 @@ import { config, shouldUseMock } from './config'
 import cityRouter from './routes/city'
 import weatherRouter from './routes/weather'
 import indicesRouter from './routes/indices'
+import airRouter from './routes/air'
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use('/api/city', cityRouter)
 app.use('/api/weather', weatherRouter)
 app.use('/api/indices', indicesRouter)
+app.use('/api/air', airRouter)
 
 app.listen(config.port, () => {
   console.log(`🚀 Server is running on http://localhost:${config.port}`)
