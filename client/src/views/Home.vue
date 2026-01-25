@@ -71,7 +71,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home">
+  <div>
     <!-- 顶部导航 -->
     <header class="header">
       <div class="logo">🌤️ Weather Viz</div>
@@ -108,97 +108,63 @@ onMounted(() => {
       <!-- 7天预报 -->
       <DailyForecast />
     </main>
-
-    <!-- 数据来源声明 -->
-    <footer class="attribution">
-      天气服务由
-      <a
-        href="https://www.qweather.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        >和风天气</a
-      >
-      驱动
-    </footer>
   </div>
 </template>
 
 <style scoped lang="scss">
-.home {
-  /* 顶部导航 */
-  .header {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-md) var(--spacing-lg);
-    background: var(--color-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
-    margin-bottom: var(--spacing-lg);
+/* 顶部导航 */
+.header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  margin-bottom: var(--spacing-lg);
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 600;
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+}
+
+/* Bento Grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-lg);
+
+  /* 主天气卡片 */
+  .card-main {
+    grid-row: span 2;
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(180deg, #e0f7fa 0%, #ffffff 100%);
+
+    .city {
+      font-size: 1.2rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .weather-icon {
+      font-size: 5rem;
+      margin: var(--spacing-lg) 0;
+    }
+
+    .temp {
+      font-size: 4rem;
+      font-weight: 300;
       color: var(--color-text);
     }
-  }
 
-  /* Bento Grid */
-  .bento-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto auto;
-    gap: var(--spacing-lg);
-
-    /* 主天气卡片 */
-    .card-main {
-      grid-row: span 2;
-      text-align: center;
-      padding: var(--spacing-xl);
-      background: linear-gradient(180deg, #e0f7fa 0%, #ffffff 100%);
-
-      .city {
-        font-size: 1.2rem;
-        color: var(--color-text-secondary);
-        margin-bottom: var(--spacing-md);
-      }
-
-      .weather-icon {
-        font-size: 5rem;
-        margin: var(--spacing-lg) 0;
-      }
-
-      .temp {
-        font-size: 4rem;
-        font-weight: 300;
-        color: var(--color-text);
-      }
-
-      .desc {
-        color: var(--color-text-secondary);
-        margin-top: var(--spacing-sm);
-      }
-    }
-  }
-
-  /* 数据来源声明 */
-  .attribution {
-    text-align: center;
-    padding: var(--spacing-lg) 0;
-    color: var(--color-text-secondary);
-    font-size: 0.85rem;
-
-    a {
-      color: var(--color-primary, #10b981);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-
-      &:hover {
-        color: var(--color-primary-dark, #059669);
-        text-decoration: underline;
-      }
+    .desc {
+      color: var(--color-text-secondary);
+      margin-top: var(--spacing-sm);
     }
   }
 }

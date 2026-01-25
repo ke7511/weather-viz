@@ -49,7 +49,7 @@ const formattedDate = computed(() => {
 </script>
 
 <template>
-  <div class="home">
+  <div>
     <header class="card header-card">
       <button class="back-btn" @click="$router.back()">← 返回</button>
       <h3>📅 {{ formattedDate }}</h3>
