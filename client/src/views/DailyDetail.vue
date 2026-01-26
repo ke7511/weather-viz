@@ -56,18 +56,18 @@ const formattedDate = computed(() => {
     </header>
     <main class="main-content">
       <!-- 左侧：天气概览 -->
-      <section v-if="dailyForecast" class="card weather-overview">
+      <section class="card weather-overview">
         <div class="weather-icon">
-          <i :class="'qi-' + dailyForecast.iconDay"></i>
+          <i :class="'qi-' + dailyForecast?.iconDay"></i>
         </div>
         <div class="weather-info">
-          <div class="weather-text">{{ dailyForecast.textDay }}</div>
+          <div class="weather-text">{{ dailyForecast?.textDay }}</div>
           <div class="temp-range">
-            <span class="temp-max">{{ dailyForecast.tempMax }}°</span>
+            <span class="temp-max">{{ dailyForecast?.tempMax }}°</span>
             <span class="divider">/</span>
-            <span class="temp-min">{{ dailyForecast.tempMin }}°</span>
+            <span class="temp-min">{{ dailyForecast?.tempMin }}°</span>
           </div>
-          <div class="night-info">🌙 夜间 {{ dailyForecast.textNight }}</div>
+          <div class="night-info">🌙 夜间 {{ dailyForecast?.textNight }}</div>
         </div>
       </section>
 
