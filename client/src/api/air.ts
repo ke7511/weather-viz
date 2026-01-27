@@ -17,25 +17,39 @@ export interface PollutantInfo {
 
 // AQI 信息
 export interface AQIInfo {
-  value: number // AQI 数值
-  valueDisplay: string
+  aqi: number // AQI 数值
+  aqiDisplay: string
   level: string // AQI 等级 1-6
   category: string // 空气质量类别：优、良、轻度污染等
-  color: string // 等级对应颜色
+  code: string // 如 'cn-mee'
+  name: string // 如 'AQI (CN)'
+  color: {
+    red: number
+    green: number
+    blue: number
+    alpha: number
+  }
   primaryPollutant: {
     code: string
     name: string
     fullName: string
   }
+  health?: {
+    effect: string
+    advice: {
+      generalPopulation: string
+      sensitivePopulation: string
+    }
+  }
 }
 
 // 空气质量响应
 export interface AirQualityResponse {
-  code: string
-  updateTime: string
-  aqi: AQIInfo
+  indexes: AQIInfo[]
   pollutants: PollutantInfo[]
-  source?: string
+  metadata?: object
+  stations?: object[]
+  sources?: string[] // 数据来源（署名规范要求完整显示）
 }
 
 /**

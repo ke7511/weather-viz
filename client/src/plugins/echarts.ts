@@ -1,5 +1,5 @@
 import * as echarts from 'echarts/core'
-import { BarChart, LineChart } from 'echarts/charts'
+import { BarChart, LineChart, GaugeChart, PieChart } from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -17,7 +17,9 @@ import { CanvasRenderer } from 'echarts/renderers'
 import type {
   // 系列类型的定义后缀都为 SeriesOption
   BarSeriesOption,
-  LineSeriesOption
+  LineSeriesOption,
+  GaugeSeriesOption,
+  PieSeriesOption
 } from 'echarts/charts'
 import type {
   // 组件类型的定义后缀都为 ComponentOption
@@ -35,6 +37,8 @@ import type { ComposeOption } from 'echarts/core'
 type ECOption = ComposeOption<
   | BarSeriesOption
   | LineSeriesOption
+  | GaugeSeriesOption
+  | PieSeriesOption
   | TitleComponentOption
   | TooltipComponentOption
   | GridComponentOption
@@ -56,6 +60,8 @@ echarts.use([
   DataZoomComponent,
   BarChart,
   LineChart,
+  GaugeChart,
+  PieChart,
   LabelLayout,
   UniversalTransition,
   CanvasRenderer

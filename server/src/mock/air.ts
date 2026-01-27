@@ -48,7 +48,7 @@ function generateMockAirQuality() {
       generatePollutant('so2', 'SO2', '二氧化硫', 20, 50),
       generatePollutant('co', 'CO', '一氧化碳', 0.5, 2, 1)
     ],
-    source: 'Mock Data'
+    sources: ['中国环境监测总站']
   }
 }
 

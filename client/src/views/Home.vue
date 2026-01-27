@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import CitySearch from '@/modules/home/CitySearch.vue'
 import LocationBadge from '@/modules/home/LocationBadge.vue'
+import AirQuality from '@/modules/home/AirQuality.vue'
 import TemperatureTrend from '@/components/TemperatureTrend.vue'
 import DailyForecast from '@/modules/home/DailyForecast.vue'
 import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import Icon from '@/components/Icon.vue'
 import type { CityInfo } from '@/api/city'
+import { getAirQualityApi, type AQIInfo, type PollutantInfo } from '@/api/air'
 import { onMounted, ref } from 'vue'
 import {
   getWeatherApi,
@@ -27,19 +29,27 @@ const uvIndex = ref<UVIndexInfo | null>(null)
 const sunrise = ref<string>('')
 const sunset = ref<string>('')
 const hourlyWeather = ref<HourlyWeatherInfo[]>([])
+const aqi = ref<AQIInfo | null>(null)
+const pollutants = ref<PollutantInfo[]>([])
+const airSources = ref<string[]>([])
 
 async function fetchAllData() {
-  const [weatherRes, uvRes, sunRes, hourlyWeatherRes] = await Promise.all([
-    getWeatherApi(location.value.id),
-    getUVIndexApi(location.value.id),
-    getSunriseSunsetApi(location.value.id),
-    getHourlyWeatherApi(location.value.id)
-  ])
+  const [weatherRes, uvRes, sunRes, hourlyWeatherRes, airRes] =
+    await Promise.all([
+      getWeatherApi(location.value.id),
+      getUVIndexApi(location.value.id),
+      getSunriseSunsetApi(location.value.id),
+      getHourlyWeatherApi(location.value.id),
+      getAirQualityApi(location.value.lat, location.value.lon)
+    ])
   weather.value = weatherRes.now
   uvIndex.value = uvRes.daily?.[0] || null
   sunrise.value = sunRes.sunrise || ''
   sunset.value = sunRes.sunset || ''
   hourlyWeather.value = hourlyWeatherRes.hourly
+  aqi.value = airRes.indexes?.[0] || null
+  pollutants.value = airRes.pollutants || []
+  airSources.value = airRes.sources || []
   formatHourlyWeather()
 }
 
@@ -81,17 +91,25 @@ onMounted(() => {
 
     <!-- 主体 Bento Grid -->
     <main class="bento-grid">
-      <!-- 左侧大卡片：当前天气 -->
+      <!-- 左侧大卡片：当前天气 + 空气质量 -->
       <section class="card card-main">
-        <div class="city">
-          <Icon name="location" style="color: #ff6b6b" />
-          {{ location?.name }}
+        <div class="weather-section">
+          <div class="city">
+            <Icon name="location" style="color: #ff6b6b" />
+            {{ location?.name }}
+          </div>
+          <div class="weather-icon"><i :class="'qi-' + weather?.icon"></i></div>
+          <div class="temp">{{ weather?.temp }}°C</div>
+          <div class="desc">
+            {{ weather?.text }} · 体感 {{ weather?.feelsLike }}°C
+          </div>
         </div>
-        <div class="weather-icon"><i :class="'qi-' + weather?.icon"></i></div>
-        <div class="temp">{{ weather?.temp }}°C</div>
-
-        <div class="desc">
-          {{ weather?.text }} · 体感 {{ weather?.feelsLike }}°C
+        <div class="air-section">
+          <AirQuality
+            :aqi="aqi"
+            :pollutants="pollutants"
+            :sources="airSources"
+          />
         </div>
       </section>
 
@@ -141,30 +159,48 @@ onMounted(() => {
   /* 主天气卡片 */
   .card-main {
     grid-row: span 2;
-    text-align: center;
-    padding: var(--spacing-xl);
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
     background: linear-gradient(180deg, #e0f7fa 0%, #ffffff 100%);
 
-    .city {
-      font-size: 1.2rem;
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
+    .weather-section {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      .city {
+        font-size: 1.2rem;
+        color: var(--color-text-secondary);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .weather-icon {
+        font-size: 4.5rem;
+        margin: var(--spacing-md) 0;
+      }
+
+      .temp {
+        font-size: 3.5rem;
+        font-weight: 300;
+        color: var(--color-text);
+      }
+
+      .desc {
+        color: var(--color-text-secondary);
+        margin-top: var(--spacing-sm);
+      }
     }
 
-    .weather-icon {
-      font-size: 5rem;
-      margin: var(--spacing-lg) 0;
-    }
-
-    .temp {
-      font-size: 4rem;
-      font-weight: 300;
-      color: var(--color-text);
-    }
-
-    .desc {
-      color: var(--color-text-secondary);
-      margin-top: var(--spacing-sm);
+    .air-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding-left: var(--spacing-lg);
+      border-left: 1px solid rgba(0, 0, 0, 0.08);
     }
   }
 }
