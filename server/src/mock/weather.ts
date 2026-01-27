@@ -1,26 +1,22 @@
 export const mockWeatherData = {
   code: '200',
-  location: [
-    {
-      now: {
-        obsTime: '2020-06-30T21:40+08:00',
-        temp: '24',
-        feelsLike: '26',
-        icon: '101',
-        text: '多云',
-        wind360: '123',
-        windDir: '东南风',
-        windScale: '1',
-        windSpeed: '3',
-        humidity: '72',
-        precip: '0.0',
-        pressure: '1003',
-        vis: '16',
-        cloud: '10',
-        dew: '21'
-      }
-    }
-  ]
+  now: {
+    obsTime: '2020-06-30T21:40+08:00',
+    temp: '24',
+    feelsLike: '26',
+    icon: '101',
+    text: '多云',
+    wind360: '123',
+    windDir: '东南风',
+    windScale: '1',
+    windSpeed: '3',
+    humidity: '72',
+    precip: '0.0',
+    pressure: '1003',
+    vis: '16',
+    cloud: '10',
+    dew: '21'
+  }
 }
 
 export function getMockWeather() {
@@ -38,31 +34,53 @@ export function getMockSunriseSunset() {
   return mockSunriseSunsetData
 }
 
-// 逐小时天气 mock 数据
-export const mockHourlyWeather = {
-  code: '200',
-  hourly: [
-    {
-      fxTime: '2020-06-30T21:40+08:00',
-      temp: '24',
-      icon: '101',
-      text: '多云',
-      wind360: '123',
-      windDir: '东南风',
-      windScale: '1',
-      windSpeed: '3',
-      humidity: '72',
-      precip: '0.0',
-      pressure: '1003',
-      vis: '16',
-      cloud: '10',
-      dew: '21'
-    }
+// 逐小时天气 mock 数据 - 动态生成 24 小时
+function generateMockHourlyWeather() {
+  const hourly = []
+  const now = new Date()
+  now.setMinutes(0, 0, 0)
+
+  const weatherTypes = [
+    { icon: '100', text: '晴' },
+    { icon: '101', text: '多云' }
   ]
+
+  for (let i = 0; i < 24; i++) {
+    const time = new Date(now.getTime() + i * 3600000)
+    const hour = time.getHours()
+
+    // 模拟温度变化：白天高，夜间低
+    const baseTemp = 22
+    const tempVariation = Math.sin(((hour - 6) / 24) * Math.PI * 2) * 6
+    const temp = Math.round(
+      baseTemp + tempVariation + (Math.random() - 0.5) * 2
+    )
+
+    const weather = weatherTypes[i % weatherTypes.length]
+
+    hourly.push({
+      fxTime: time.toISOString().replace('Z', '+08:00'),
+      temp: String(temp),
+      icon: weather.icon,
+      text: weather.text,
+      wind360: String(Math.floor(Math.random() * 360)),
+      windDir: '东南风',
+      windScale: String(Math.floor(Math.random() * 3) + 1),
+      windSpeed: String(Math.floor(Math.random() * 15) + 5),
+      humidity: String(Math.floor(Math.random() * 30) + 50),
+      precip: '0.0',
+      pressure: String(Math.floor(Math.random() * 20) + 1010),
+      vis: '16',
+      cloud: String(Math.floor(Math.random() * 50)),
+      dew: String(temp - 5)
+    })
+  }
+
+  return { code: '200', hourly }
 }
 
 export function getMockHourlyWeather() {
-  return mockHourlyWeather
+  return generateMockHourlyWeather()
 }
 
 // 168小时（7天）逐时预报 mock 数据

@@ -18,6 +18,7 @@ export async function getAirQuality(req: Request, res: Response) {
     }
 
     if (shouldUseMock()) {
+      console.log(1)
       const data = getMockAirQuality()
       return res.json(data)
     }

@@ -31,17 +31,35 @@ const windDir = computed(() => {
 })
 
 const computedSunrise = computed(() => {
-  if (!props.weather) return '-'
-  return 'sunrise' in props.weather
-    ? props.weather.sunrise
-    : dayjs(props.sunrise).format('HH:mm')
+  // 如果 weather 对象包含 sunrise 字段（如 DailyForecastInfo），直接使用
+  if (props.weather && 'sunrise' in props.weather) {
+    return props.weather.sunrise || '-'
+  }
+  // 否则使用传入的 sunrise prop，如果已经是 HH:mm 格式就直接显示
+  if (props.sunrise) {
+    // 如果是 HH:mm 格式，直接返回
+    if (/^\d{2}:\d{2}$/.test(props.sunrise)) {
+      return props.sunrise
+    }
+    // 否则尝试用 dayjs 解析
+    const parsed = dayjs(props.sunrise)
+    return parsed.isValid() ? parsed.format('HH:mm') : props.sunrise
+  }
+  return '-'
 })
 
 const computedSunset = computed(() => {
-  if (!props.weather) return '-'
-  return 'sunset' in props.weather
-    ? props.weather.sunset
-    : dayjs(props.sunset).format('HH:mm')
+  if (props.weather && 'sunset' in props.weather) {
+    return props.weather.sunset || '-'
+  }
+  if (props.sunset) {
+    if (/^\d{2}:\d{2}$/.test(props.sunset)) {
+      return props.sunset
+    }
+    const parsed = dayjs(props.sunset)
+    return parsed.isValid() ? parsed.format('HH:mm') : props.sunset
+  }
+  return '-'
 })
 </script>
 

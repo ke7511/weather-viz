@@ -24,22 +24,41 @@ function generateMockAirQuality() {
   const primaryPollutant =
     pollutants[Math.floor(Math.random() * pollutants.length)]
 
+  // 将颜色转换为 RGBA 对象
+  const hexToRgba = (hex: string) => {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return { red: r, green: g, blue: b, alpha: 1 }
+  }
+
   return {
     code: '200',
     updateTime: dayjs().format('YYYY-MM-DDTHH:mm+08:00'),
-    aqi: {
-      // 总体 AQI 信息
-      value: aqi,
-      valueDisplay: String(aqi),
-      level: String(aqiLevels.indexOf(level) + 1),
-      category: level.category,
-      color: level.color,
-      primaryPollutant: {
-        code: primaryPollutant.toLowerCase().replace('.', ''),
-        name: primaryPollutant,
-        fullName: getPollutantFullName(primaryPollutant)
+    indexes: [
+      {
+        aqi: aqi,
+        aqiDisplay: String(aqi),
+        level: String(aqiLevels.indexOf(level) + 1),
+        category: level.category,
+        code: 'cn-mee',
+        name: 'AQI (CN)',
+        color: hexToRgba(level.color),
+        primaryPollutant: {
+          code: primaryPollutant.toLowerCase().replace('.', ''),
+          name: primaryPollutant,
+          fullName: getPollutantFullName(primaryPollutant)
+        },
+        health: {
+          effect:
+            '空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响',
+          advice: {
+            generalPopulation: '极少数异常敏感人群应减少户外活动',
+            sensitivePopulation: '极少数异常敏感人群应减少户外活动'
+          }
+        }
       }
-    },
+    ],
     pollutants: [
       generatePollutant('pm2p5', 'PM2.5', '细颗粒物', 35, 75),
       generatePollutant('pm10', 'PM10', '可吸入颗粒物', 50, 150),
