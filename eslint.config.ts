@@ -8,7 +8,12 @@ import vueParser from 'vue-eslint-parser'
 
 export default defineConfig(
   {
-    ignores: ['dist', 'node_modules', '.DS_Store']
+    ignores: [
+      'dist',
+      'node_modules',
+      '.DS_Store',
+      'client/src/assets/icon/iconfont.js'
+    ]
   },
 
   // 基础配置 - 所有文件的全局变量

@@ -61,10 +61,12 @@ async function handleLocate() {
 <template>
   <div class="location-badge" title="点击获取当前位置" @click="handleLocate">
     <div class="location-icon">
-      <span v-if="isLocating">⏳</span>
-      <span v-else>
-        <Icon name="location" style="color: #ff6b6b; vertical-align: -2px" />
-      </span>
+      <Icon v-if="isLocating" name="loading" class="loading-icon" />
+      <Icon
+        v-else
+        name="location"
+        style="color: #ff6b6b; vertical-align: -2px"
+      />
     </div>
     <span class="location-text">{{
       isLocating ? '定位中...' : location?.name
@@ -92,6 +94,20 @@ async function handleLocate() {
 
   .location-icon {
     font-size: 1rem;
+
+    .loading-icon {
+      animation: spin 1s linear infinite;
+      color: #666;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .location-text {

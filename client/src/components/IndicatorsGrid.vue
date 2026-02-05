@@ -3,6 +3,7 @@ import type { weatherInfo, DailyForecastInfo } from '@/api/weather'
 import type { UVIndexInfo } from '@/api/indices'
 import dayjs from 'dayjs'
 import { computed } from 'vue'
+import Icon from '@/components/Icon.vue'
 
 const props = defineProps<{
   weather: weatherInfo | DailyForecastInfo | null
@@ -66,21 +67,53 @@ const computedSunset = computed(() => {
 <template>
   <div class="indicators-grid">
     <div class="card card-indicator">
-      💧 相对湿度<br />{{ weather?.humidity || '-' }}%
+      <span class="indicator-label">
+        <Icon name="humidity" class="indicator-icon" />相对湿度
+      </span>
+      <span class="indicator-value">{{ weather?.humidity || '-' }}%</span>
     </div>
     <div class="card card-indicator">
-      ☁️ 云量<br />{{ weather?.cloud || '-' }}%
-    </div>
-    <div class="card card-indicator">🌬️ 风速<br />{{ windSpeed }}km/h</div>
-    <div class="card card-indicator">🧭 风向<br />{{ windDir }}</div>
-    <div class="card card-indicator">
-      👁️ 能见度<br />{{ weather?.vis || '-' }}km
+      <span class="indicator-label">
+        <Icon name="cloud" class="indicator-icon" />云量
+      </span>
+      <span class="indicator-value">{{ weather?.cloud || '-' }}%</span>
     </div>
     <div class="card card-indicator">
-      ☀️ UV指数<br />{{ uvIndex?.category || '-' }}
+      <span class="indicator-label">
+        <Icon name="wind" class="indicator-icon" />风速
+      </span>
+      <span class="indicator-value">{{ windSpeed }}km/h</span>
     </div>
-    <div class="card card-indicator">🌅 日出<br />{{ computedSunrise }}</div>
-    <div class="card card-indicator">🌇 日落<br />{{ computedSunset }}</div>
+    <div class="card card-indicator">
+      <span class="indicator-label">
+        <Icon name="compass" class="indicator-icon" />风向
+      </span>
+      <span class="indicator-value">{{ windDir }}</span>
+    </div>
+    <div class="card card-indicator">
+      <span class="indicator-label">
+        <Icon name="visibility" class="indicator-icon" />能见度
+      </span>
+      <span class="indicator-value">{{ weather?.vis || '-' }}km</span>
+    </div>
+    <div class="card card-indicator">
+      <span class="indicator-label">
+        <Icon name="sun" class="indicator-icon" />UV指数
+      </span>
+      <span class="indicator-value">{{ uvIndex?.category || '-' }}</span>
+    </div>
+    <div class="card card-indicator">
+      <span class="indicator-label">
+        <Icon name="sunrise" class="indicator-icon" />日出
+      </span>
+      <span class="indicator-value">{{ computedSunrise }}</span>
+    </div>
+    <div class="card card-indicator">
+      <span class="indicator-label">
+        <Icon name="sunset" class="indicator-icon" />日落
+      </span>
+      <span class="indicator-value">{{ computedSunset }}</span>
+    </div>
   </div>
 </template>
 
@@ -95,12 +128,30 @@ const computedSunset = computed(() => {
   .card-indicator {
     text-align: center;
     padding: var(--spacing-md);
-    font-size: 0.9rem;
     color: var(--color-text-secondary);
     transition: all 0.2s;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: 4px;
+
+    .indicator-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .indicator-icon {
+      font-size: 1rem;
+      color: #10b981;
+    }
+
+    .indicator-value {
+      color: var(--color-text);
+    }
+
     &:hover {
       box-shadow:
         0 0 0 2px rgba(16, 185, 129, 0.2),
