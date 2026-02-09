@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useIntervalFn } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
 import CitySearch from '@/modules/home/CitySearch.vue'
 import LocationBadge from '@/modules/home/LocationBadge.vue'
-import AirQuality from '@/modules/home/AirQuality.vue'
-import TemperatureTrend from '@/components/TemperatureTrend.vue'
-import DailyForecast from '@/modules/home/DailyForecast.vue'
-import IndicatorsGrid from '@/components/IndicatorsGrid.vue'
 import Icon from '@/components/Icon.vue'
+// 骨架屏组件
+import SkeletonWeatherCard from '@/components/skeleton/SkeletonWeatherCard.vue'
+import SkeletonIndicators from '@/components/skeleton/SkeletonIndicators.vue'
+import SkeletonChart from '@/components/skeleton/SkeletonChart.vue'
+import SkeletonForecast from '@/components/skeleton/SkeletonForecast.vue'
 import type { CityInfo } from '@/api/city'
 import { getAirQualityApi, type AQIInfo, type PollutantInfo } from '@/api/air'
-import { onMounted, ref } from 'vue'
 import {
   getWeatherApi,
   getSunriseSunsetApi,
@@ -17,13 +20,21 @@ import {
   getHourlyWeatherApi
 } from '@/api/weather'
 import { getUVIndexApi, type UVIndexInfo } from '@/api/indices'
-import { useIntervalFn } from '@vueuse/core'
 import { useLocationStore } from '@/stores/location'
-import { storeToRefs } from 'pinia'
+import {
+  AirQuality,
+  TemperatureTrend,
+  DailyForecast,
+  IndicatorsGrid
+} from '@/utils/lazyComponents'
 
 const locationStore = useLocationStore()
 const { location } = storeToRefs(locationStore)
 const { setLocation } = locationStore
+
+// 加载状态
+const loading = ref(true)
+
 const weather = ref<weatherInfo | null>(null)
 const uvIndex = ref<UVIndexInfo | null>(null)
 const sunrise = ref<string>('')
@@ -34,23 +45,28 @@ const pollutants = ref<PollutantInfo[]>([])
 const airSources = ref<string[]>([])
 
 async function fetchAllData() {
-  const [weatherRes, uvRes, sunRes, hourlyWeatherRes, airRes] =
-    await Promise.all([
-      getWeatherApi(location.value.id),
-      getUVIndexApi(location.value.id),
-      getSunriseSunsetApi(location.value.id),
-      getHourlyWeatherApi(location.value.id),
-      getAirQualityApi(location.value.lat, location.value.lon)
-    ])
-  weather.value = weatherRes.now
-  uvIndex.value = uvRes.daily?.[0] || null
-  sunrise.value = sunRes.sunrise || ''
-  sunset.value = sunRes.sunset || ''
-  hourlyWeather.value = hourlyWeatherRes.hourly
-  aqi.value = airRes.indexes?.[0] || null
-  pollutants.value = airRes.pollutants || []
-  airSources.value = airRes.sources || []
-  formatHourlyWeather()
+  loading.value = true
+  try {
+    const [weatherRes, uvRes, sunRes, hourlyWeatherRes, airRes] =
+      await Promise.all([
+        getWeatherApi(location.value.id),
+        getUVIndexApi(location.value.id),
+        getSunriseSunsetApi(location.value.id),
+        getHourlyWeatherApi(location.value.id),
+        getAirQualityApi(location.value.lat, location.value.lon)
+      ])
+    weather.value = weatherRes.now
+    uvIndex.value = uvRes.daily?.[0] || null
+    sunrise.value = sunRes.sunrise || ''
+    sunset.value = sunRes.sunset || ''
+    hourlyWeather.value = hourlyWeatherRes.hourly
+    aqi.value = airRes.indexes?.[0] || null
+    pollutants.value = airRes.pollutants || []
+    airSources.value = airRes.sources || []
+    formatHourlyWeather()
+  } finally {
+    loading.value = false
+  }
 }
 
 // 将当前天气转换为逐小时天气格式
@@ -91,40 +107,53 @@ onMounted(() => {
 
     <!-- 主体 Bento Grid -->
     <main class="bento-grid">
-      <!-- 左侧大卡片：当前天气 + 空气质量 -->
-      <section class="card card-main">
-        <div class="weather-section">
-          <div class="city">
-            <Icon name="location" style="color: #ff6b6b" />
-            {{ location?.name }}
-          </div>
-          <div class="weather-icon"><i :class="'qi-' + weather?.icon"></i></div>
-          <div class="temp">{{ weather?.temp }}°C</div>
-          <div class="desc">
-            {{ weather?.text }} · 体感 {{ weather?.feelsLike }}°C
-          </div>
-        </div>
-        <div class="air-section">
-          <AirQuality
-            :aqi="aqi"
-            :pollutants="pollutants"
-            :sources="airSources"
-          />
-        </div>
-      </section>
+      <!-- 骨架屏状态 -->
+      <template v-if="loading">
+        <SkeletonWeatherCard />
+        <SkeletonIndicators />
+        <SkeletonChart />
+        <SkeletonForecast />
+      </template>
 
-      <!-- 右侧小卡片：指标 (2x4 网格) -->
-      <IndicatorsGrid
-        :weather="weather"
-        :uv-index="uvIndex"
-        :sunrise="sunrise"
-        :sunset="sunset"
-      />
+      <!-- 真实内容 -->
+      <template v-else>
+        <!-- 左侧大卡片：当前天气 + 空气质量 -->
+        <section class="card card-main">
+          <div class="weather-section">
+            <div class="city">
+              <Icon name="location" style="color: #ff6b6b" />
+              {{ location?.name }}
+            </div>
+            <div class="weather-icon">
+              <i :class="'qi-' + weather?.icon"></i>
+            </div>
+            <div class="temp">{{ weather?.temp }}°C</div>
+            <div class="desc">
+              {{ weather?.text }} · 体感 {{ weather?.feelsLike }}°C
+            </div>
+          </div>
+          <div class="air-section">
+            <AirQuality
+              :aqi="aqi"
+              :pollutants="pollutants"
+              :sources="airSources"
+            />
+          </div>
+        </section>
 
-      <!-- 温度趋势图 -->
-      <TemperatureTrend :hourly-weather="hourlyWeather" />
-      <!-- 7天预报 -->
-      <DailyForecast />
+        <!-- 右侧小卡片：指标 (2x4 网格) -->
+        <IndicatorsGrid
+          :weather="weather"
+          :uv-index="uvIndex"
+          :sunrise="sunrise"
+          :sunset="sunset"
+        />
+
+        <!-- 温度趋势图 -->
+        <TemperatureTrend :hourly-weather="hourlyWeather" />
+        <!-- 7天预报 -->
+        <DailyForecast />
+      </template>
     </main>
   </div>
 </template>
