@@ -135,7 +135,6 @@ export function getMockAirQuality() {
           valueDisplay: String(subIndex)
         }
       }
-    }),
-    sources: ['中国环境监测总站']
+    })
   }
 }
