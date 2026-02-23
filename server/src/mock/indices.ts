@@ -27,7 +27,7 @@ const uvLevels = [
 ]
 
 export function getMockUV() {
-  const daily = Array.from({ length: 3 }, (_, i) => {
+  const daily = Array.from({ length: 7 }, (_, i) => {
     const date = dayjs().add(i, 'day').format('YYYY-MM-DD')
     const uv = faker.helpers.arrayElement(uvLevels)
 

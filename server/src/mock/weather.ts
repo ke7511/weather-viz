@@ -167,7 +167,9 @@ export function getMockDailyForecast() {
       cloud: String(faker.number.int({ min: 5, max: 95 })),
       windSpeedDay: String(faker.number.int({ min: 5, max: 25 })),
       windDirDay: faker.helpers.arrayElement(windDirs),
-      vis: String(faker.number.int({ min: 5, max: 30 }))
+      vis: String(faker.number.int({ min: 5, max: 30 })),
+      sunrise: `${faker.number.int({ min: 5, max: 7 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}`,
+      sunset: `${faker.number.int({ min: 17, max: 19 }).toString().padStart(2, '0')}:${faker.number.int({ min: 0, max: 59 }).toString().padStart(2, '0')}`
     }
   })
 
