@@ -9,6 +9,7 @@
     "start": "node dist/app.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.3.0",
     "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dayjs": "^1.11.19",
