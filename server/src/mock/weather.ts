@@ -66,7 +66,7 @@ export function getMockHourlyWeather() {
   now.setMinutes(0, 0, 0)
 
   const hourly = Array.from({ length: 24 }, (_, i) => {
-    const time = new Date(now.getTime() + i * 3600000)
+    const time = new Date(now.getTime() + (i + 1) * 3600000)
     const hour = time.getHours()
 
     // 模拟温度变化：白天高，夜间低
@@ -79,7 +79,7 @@ export function getMockHourlyWeather() {
     const weather = faker.helpers.arrayElement(weatherTypes)
 
     return {
-      fxTime: time.toISOString().replace('Z', '+08:00'),
+      fxTime: dayjs(time).format('YYYY-MM-DDTHH:mm+08:00'),
       temp: String(temp),
       icon: weather.icon,
       text: weather.text,
@@ -110,7 +110,7 @@ export function getMockHourlyWeather168() {
   )
 
   const hourly = Array.from({ length: 168 }, (_, i) => {
-    const time = new Date(now.getTime() + i * 3600000)
+    const time = new Date(now.getTime() + (i + 1) * 3600000)
     const hour = time.getHours()
     const dayIndex = Math.floor(i / 24)
 
@@ -124,7 +124,7 @@ export function getMockHourlyWeather168() {
     const isRainy = weather.icon === '305' || weather.icon === '302'
 
     return {
-      fxTime: time.toISOString().replace('Z', '+08:00'),
+      fxTime: dayjs(time).format('YYYY-MM-DDTHH:mm+08:00'),
       temp: String(temp),
       icon: weather.icon,
       text: weather.text,
